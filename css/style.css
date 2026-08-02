@@ -133,7 +133,6 @@ button, input, textarea, select{ font-family: var(--font-body); }
   height: var(--header-height);
   z-index: var(--z-fixed);
   background: rgba(10,10,10,.75);
-  backdrop-filter: blur(10px);
   border-bottom: 1px solid transparent;
   transition: border-color .4s, background .4s;
 }
@@ -606,4 +605,13 @@ button, input, textarea, select{ font-family: var(--font-body); }
 @media (prefers-reduced-motion: reduce){
   .draw-line{ animation: none; stroke-dashoffset: 0; }
   *{ scroll-behavior: auto !important; }
+}
+.hero-container{
+  grid-template-columns: 1fr;
+}
+.hero-art{
+  margin-top: 2rem;
+}
+.hero-photo{
+  aspect-ratio: 4/3;
 }
