@@ -27,7 +27,13 @@
       </ul>
       <button class="nav-close" id="nav-close"><i class="ri-close-line"></i></button>
     </div>
-    <button class="nav-toggle" id="nav-toggle"><i class="ri-menu-3-line"></i></button>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <i class="ri-sun-line"></i>
+        <i class="ri-moon-line"></i>
+      </button>
+      <button class="nav-toggle" id="nav-toggle"><i class="ri-menu-3-line"></i></button>
+    </div>
   </nav>
 </header>
 
@@ -48,10 +54,21 @@
       </div>
 
       <div class="hero-art reveal">
-        <span class="hero-coord coord-1">N 09°02' &nbsp;E 38°45'</span>
+        <span class="hero-coord coord-1">N 09°02' E 38°45'</span>
         <span class="hero-coord coord-2">FIG. 01 — RESIDENCE</span>
-        <div class="photo-frame gold-tint hero-photo">
-          <img src="images/hero-residence.jpeg" alt="Luxury modern residence with large windows at dusk, designed by Biyaf">
+        
+        <div class="hero-image-container">
+          <div class="accent-frame accent-frame-1"></div>
+          <div class="accent-frame accent-frame-2"></div>
+          
+          <div class="hero-main-frame">
+            <div class="photo-frame gold-tint hero-photo">
+              <div class="corner-mark corner-tl"></div>
+              <div class="corner-mark corner-br"></div>
+              <img src="images/hero-residence.jpeg" alt="Luxury modern residence with large windows at dusk, designed by Biyaf">
+            </div>
+            <div class="hero-badge">FEATURED PROJECT</div>
+          </div>
         </div>
       </div>
     </div>

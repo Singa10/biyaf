@@ -9,6 +9,31 @@ document.querySelectorAll('.nav-link').forEach(link =>
   link.addEventListener('click', () => navMenu.classList.remove('show-menu'))
 );
 
+/* ---------- Theme Toggle (Dark/Light Mode) ---------- */
+const themeToggle = document.getElementById('theme-toggle');
+const htmlElement = document.documentElement;
+
+// Get saved theme from localStorage or default to 'dark'
+const getCurrentTheme = () => localStorage.getItem('theme') || 'dark';
+
+// Apply theme on page load
+const applyTheme = (theme) => {
+  htmlElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+};
+
+// Initialize theme on page load
+applyTheme(getCurrentTheme());
+
+// Theme toggle button handler
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = getCurrentTheme();
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
+  });
+}
+
 /* ---------- Header shadow on scroll ---------- */
 const header = document.getElementById('header');
 const shadowHeader = () => {
