@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Biyaf Admin</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+<!-- Sidebar -->
+<aside class="admin-sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">BIY<span>AF</span></div>
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <i class="ri-menu-fold-line"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="#dashboard" class="sidebar-link active" data-section="dashboard">
+      <i class="ri-dashboard-line"></i>
+      <span>Dashboard</span>
+    </a>
+    <a href="#hero" class="sidebar-link" data-section="hero">
+      <i class="ri-home-line"></i>
+      <span>Hero Section</span>
+    </a>
+    <a href="#stats" class="sidebar-link" data-section="stats">
+      <i class="ri-bar-chart-line"></i>
+      <span>Statistics</span>
+    </a>
+    <a href="#projects" class="sidebar-link" data-section="projects">
+      <i class="ri-building-line"></i>
+      <span>Projects</span>
+    </a>
+    <a href="#services" class="sidebar-link" data-section="services">
+      <i class="ri-tools-line"></i>
+      <span>Services</span>
+    </a>
+    <a href="#about" class="sidebar-link" data-section="about">
+      <i class="ri-information-line"></i>
+      <span>About Us</span>
+    </a>
+    <a href="#timeline" class="sidebar-link" data-section="timeline">
+      <i class="ri-time-line"></i>
+      <span>Timeline</span>
+    </a>
+    <a href="#contact" class="sidebar-link" data-section="contact">
+      <i class="ri-contacts-line"></i>
+      <span>Contact Info</span>
+    </a>
+    <a href="#images" class="sidebar-link" data-section="images">
+      <i class="ri-image-line"></i>
+      <span>Images</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="sidebar-link logout-btn" id="logout-btn">
+      <i class="ri-logout-box-line"></i>
+      <span>Logout</span>
+    </button>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="admin-main">
+  <!-- Top Bar -->
+  <header class="admin-header">
+    <div class="header-left">
+      <button class="mobile-toggle" id="mobile-toggle">
+        <i class="ri-menu-line"></i>
+      </button>
+      <h1 id="page-title">Dashboard</h1>
+    </div>
+    <div class="header-right">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <i class="ri-sun-line"></i>
+        <i class="ri-moon-line"></i>
+      </button>
+      <div class="admin-user">
+        <i class="ri-user-line"></i>
+        <span id="admin-username">Admin</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content Area -->
+  <div class="admin-content" id="admin-content">
+    <!-- Loading indicator -->
+    <div class="loading-container" id="loading-indicator">
+      <div class="loading-spinner"></div>
+      <p>Loading dashboard...</p>
+    </div>
+  </div>
+</main>
+
+<script src="js/admin-data.js"></script>
+<script src="js/admin-auth.js"></script>
+<script src="js/admin-app-new.js"></script>
+</body>
+</html>
