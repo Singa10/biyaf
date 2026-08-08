@@ -1603,79 +1603,197 @@ const AdminApp = {
   loadTimelineSection() {
     try {
       const timeline = AdminData.getSection('timeline') || [];
+      const sortedTimeline = timeline.sort((a, b) => parseInt(a.year) - parseInt(b.year));
       const content = document.getElementById('admin-content');
+      
+      // Calculate statistics
+      const totalYears = timeline.length > 0 ? 
+        Math.max(...timeline.map(t => parseInt(t.year))) - Math.min(...timeline.map(t => parseInt(t.year))) + 1 : 0;
+      
+      const decades = timeline.length > 0 ? 
+        new Set(timeline.map(t => Math.floor(parseInt(t.year) / 10) * 10)).size : 0;
       
       content.innerHTML = `
         <div class="section-page-header">
           <div>
             <h2>Timeline Management</h2>
-            <p>Manage your company's history and milestones</p>
+            <p>Manage your company's history and key milestones chronologically</p>
           </div>
-          <button class="btn btn-solid" onclick="AdminApp.showTimelineModal()">
-            <i class="ri-add-line"></i> Add Milestone
-          </button>
+          <div class="header-actions">
+            <button class="btn btn-secondary" onclick="AdminApp.previewTimeline()">
+              <i class="ri-eye-line"></i> Preview on Website
+            </button>
+            <button class="btn btn-solid" onclick="AdminApp.showTimelineModal()">
+              <i class="ri-add-line"></i> Add Milestone
+            </button>
+          </div>
         </div>
 
+        <!-- Enhanced Stats Overview -->
         <div class="stats-overview-grid">
-          <div class="overview-card">
+          <div class="overview-card" style="--accent: #64b5f6;">
             <i class="ri-time-line"></i>
             <div>
               <div class="overview-value">${timeline.length}</div>
               <div class="overview-label">Total Milestones</div>
             </div>
           </div>
-          <div class="overview-card">
+          <div class="overview-card" style="--accent: #81c784;">
             <i class="ri-calendar-line"></i>
             <div>
               <div class="overview-value">${timeline.length > 0 ? Math.min(...timeline.map(t => parseInt(t.year))) : 'N/A'}</div>
               <div class="overview-label">First Year</div>
             </div>
           </div>
-          <div class="overview-card">
+          <div class="overview-card" style="--accent: #ffb74d;">
             <i class="ri-calendar-check-line"></i>
             <div>
               <div class="overview-value">${timeline.length > 0 ? Math.max(...timeline.map(t => parseInt(t.year))) : 'N/A'}</div>
               <div class="overview-label">Latest Year</div>
             </div>
           </div>
-          <div class="overview-card">
-            <i class="ri-pages-line"></i>
+          <div class="overview-card" style="--accent: #ba68c8;">
+            <i class="ri-history-line"></i>
             <div>
-              <div class="overview-value">About Page</div>
-              <div class="overview-label">Location</div>
+              <div class="overview-value">${totalYears > 0 ? totalYears : 'N/A'}</div>
+              <div class="overview-label">Years Span</div>
             </div>
           </div>
         </div>
 
-        <div class="timeline-visual">
-          ${timeline.length > 0 ? timeline.sort((a, b) => parseInt(a.year) - parseInt(b.year)).map((item, index) => `
-            <div class="timeline-milestone">
-              <div class="timeline-dot"></div>
-              <div class="timeline-card">
-                <div class="timeline-year">${item.year}</div>
-                <h3>${item.title}</h3>
-                <p>${item.description}</p>
-                <div class="timeline-actions">
-                  <button class="icon-btn-mini" onclick="AdminApp.editTimeline(${index})">
-                    <i class="ri-edit-line"></i>
-                  </button>
-                  <button class="icon-btn-mini delete" onclick="AdminApp.deleteTimeline(${index})">
-                    <i class="ri-delete-bin-line"></i>
-                  </button>
-                </div>
+        ${timeline.length > 0 ? `
+          <!-- Timeline Visualization -->
+          <div class="timeline-container">
+            <div class="timeline-controls">
+              <button class="timeline-view-btn active" data-view="visual" onclick="AdminApp.switchTimelineView('visual')">
+                <i class="ri-git-commit-line"></i> Visual Timeline
+              </button>
+              <button class="timeline-view-btn" data-view="list" onclick="AdminApp.switchTimelineView('list')">
+                <i class="ri-list-check"></i> List View
+              </button>
+              <button class="timeline-view-btn" data-view="grid" onclick="AdminApp.switchTimelineView('grid')">
+                <i class="ri-grid-line"></i> Grid View
+              </button>
+            </div>
+
+            <!-- Visual Timeline View -->
+            <div class="timeline-view" id="timeline-visual-view">
+              <div class="timeline-visual">
+                ${sortedTimeline.map((item, index) => `
+                  <div class="timeline-milestone" data-year="${item.year}">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-line"></div>
+                    <div class="timeline-card">
+                      <div class="timeline-card-header">
+                        <div class="timeline-year">${item.year}</div>
+                        <div class="timeline-actions">
+                          <button class="icon-btn-mini" onclick="AdminApp.editTimeline(${index})" title="Edit">
+                            <i class="ri-edit-line"></i>
+                          </button>
+                          <button class="icon-btn-mini delete" onclick="AdminApp.deleteTimeline(${index})" title="Delete">
+                            <i class="ri-delete-bin-line"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <h3 class="timeline-title">${item.title}</h3>
+                      <p class="timeline-description">${item.description}</p>
+                      <div class="timeline-meta">
+                        <span class="timeline-badge">Milestone ${index + 1}</span>
+                        <span class="timeline-decade">${Math.floor(parseInt(item.year) / 10) * 10}s</span>
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
               </div>
             </div>
-          `).join('') : `
+
+            <!-- List View -->
+            <div class="timeline-view" id="timeline-list-view" style="display: none;">
+              <div class="timeline-list">
+                ${sortedTimeline.map((item, index) => `
+                  <div class="timeline-list-item">
+                    <div class="timeline-list-year">${item.year}</div>
+                    <div class="timeline-list-content">
+                      <h3>${item.title}</h3>
+                      <p>${item.description}</p>
+                    </div>
+                    <div class="timeline-list-actions">
+                      <button class="icon-btn" onclick="AdminApp.editTimeline(${index})">
+                        <i class="ri-edit-line"></i>
+                      </button>
+                      <button class="icon-btn delete" onclick="AdminApp.deleteTimeline(${index})">
+                        <i class="ri-delete-bin-line"></i>
+                      </button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Grid View -->
+            <div class="timeline-view" id="timeline-grid-view" style="display: none;">
+              <div class="timeline-grid">
+                ${sortedTimeline.map((item, index) => `
+                  <div class="timeline-grid-card">
+                    <div class="timeline-grid-year">${item.year}</div>
+                    <h3>${item.title}</h3>
+                    <p>${item.description}</p>
+                    <div class="timeline-grid-actions">
+                      <button class="icon-btn" onclick="AdminApp.editTimeline(${index})">
+                        <i class="ri-edit-line"></i>
+                      </button>
+                      <button class="icon-btn delete" onclick="AdminApp.deleteTimeline(${index})">
+                        <i class="ri-delete-bin-line"></i>
+                      </button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Tips -->
+          <div class="tips-card">
+            <h3><i class="ri-lightbulb-line"></i> Timeline Management Tips</h3>
+            <div class="tips-grid">
+              <div class="tip-item">
+                <i class="ri-check-line"></i>
+                <span>Order milestones chronologically by year</span>
+              </div>
+              <div class="tip-item">
+                <i class="ri-check-line"></i>
+                <span>Keep titles concise (3-7 words)</span>
+              </div>
+              <div class="tip-item">
+                <i class="ri-check-line"></i>
+                <span>Descriptions should be 1-2 sentences</span>
+              </div>
+              <div class="tip-item">
+                <i class="ri-check-line"></i>
+                <span>Focus on significant company achievements</span>
+              </div>
+              <div class="tip-item">
+                <i class="ri-check-line"></i>
+                <span>Use consistent year format (YYYY)</span>
+              </div>
+              <div class="tip-item">
+                <i class="ri-check-line"></i>
+                <span>Update regularly with new milestones</span>
+              </div>
+            </div>
+          </div>
+        ` : `
+          <div class="content-section">
             <div class="empty-state-large">
               <i class="ri-time-line"></i>
-              <h3>No Timeline Milestones</h3>
-              <p>Add your first milestone to showcase your company's journey</p>
+              <h3>No Timeline Milestones Yet</h3>
+              <p>Start building your company's story by adding your first milestone</p>
               <button class="btn btn-solid" onclick="AdminApp.showTimelineModal()">
                 <i class="ri-add-line"></i> Add First Milestone
               </button>
             </div>
-          `}
-        </div>
+          </div>
+        `}
       `;
       
     } catch (error) {
@@ -1684,11 +1802,31 @@ const AdminApp = {
     }
   },
 
+  // Switch between timeline views
+  switchTimelineView(view) {
+    // Hide all views
+    document.querySelectorAll('.timeline-view').forEach(v => v.style.display = 'none');
+    
+    // Show selected view
+    document.getElementById(`timeline-${view}-view`).style.display = 'block';
+    
+    // Update active button
+    document.querySelectorAll('.timeline-view-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-view="${view}"]`).classList.add('active');
+  },
+
+  // Preview timeline on website
+  previewTimeline() {
+    window.open('../about.html#timeline', '_blank');
+  },
+
   showTimelineModal(item = null, index = null) {
     const isEdit = item !== null;
+    const currentYear = new Date().getFullYear();
+    
     const modalHTML = `
       <div class="modal-overlay" id="timeline-modal" onclick="AdminApp.closeTimelineModal(event)">
-        <div class="modal-container" onclick="event.stopPropagation()">
+        <div class="modal-container modal-large" onclick="event.stopPropagation()">
           <div class="modal-header">
             <h3><i class="ri-time-line"></i> ${isEdit ? 'Edit' : 'Add'} Milestone</h3>
             <button class="modal-close" onclick="AdminApp.closeTimelineModal()">
@@ -1698,16 +1836,54 @@ const AdminApp = {
           <form id="timeline-form" class="modal-form">
             <div class="form-group">
               <label><i class="ri-calendar-line"></i> Year</label>
-              <input type="text" name="year" value="${item?.year || ''}" placeholder="2020" required>
+              <input 
+                type="number" 
+                name="year" 
+                value="${item?.year || currentYear}" 
+                placeholder="${currentYear}" 
+                min="1900" 
+                max="${currentYear + 10}" 
+                required
+              >
+              <small>Enter the year this milestone occurred (${1900}-${currentYear + 10})</small>
             </div>
+            
             <div class="form-group">
-              <label><i class="ri-text"></i> Title</label>
-              <input type="text" name="title" value="${item?.title || ''}" placeholder="Studio Founded" required>
+              <label><i class="ri-text"></i> Milestone Title</label>
+              <input 
+                type="text" 
+                name="title" 
+                value="${item?.title || ''}" 
+                placeholder="e.g., Studio Founded, First Major Project, Award Received" 
+                required
+                maxlength="100"
+              >
+              <small>Brief, descriptive title for this milestone (max 100 characters)</small>
             </div>
+            
             <div class="form-group">
               <label><i class="ri-file-text-line"></i> Description</label>
-              <textarea name="description" rows="3" required>${item?.description || ''}</textarea>
+              <textarea 
+                name="description" 
+                rows="4" 
+                placeholder="Describe this milestone and its significance to your company's history..." 
+                required
+                maxlength="300"
+              >${item?.description || ''}</textarea>
+              <small>
+                <span id="char-count">${(item?.description || '').length}</span>/300 characters
+              </small>
             </div>
+
+            <div class="form-preview">
+              <h4><i class="ri-eye-line"></i> Preview</h4>
+              <div class="preview-timeline-card">
+                <div class="preview-year" id="preview-year">${item?.year || currentYear}</div>
+                <h3 id="preview-title">${item?.title || 'Milestone Title'}</h3>
+                <p id="preview-description">${item?.description || 'Milestone description will appear here...'}</p>
+              </div>
+            </div>
+            
             <div class="modal-actions">
               <button type="submit" class="btn btn-solid">
                 <i class="ri-save-line"></i> ${isEdit ? 'Update' : 'Add'} Milestone
@@ -1722,7 +1898,36 @@ const AdminApp = {
     `;
     
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    document.getElementById('timeline-form').addEventListener('submit', (e) => {
+    
+    // Initialize form with live preview
+    const form = document.getElementById('timeline-form');
+    const yearInput = form.querySelector('[name="year"]');
+    const titleInput = form.querySelector('[name="title"]');
+    const descInput = form.querySelector('[name="description"]');
+    
+    // Live preview updates
+    yearInput.addEventListener('input', (e) => {
+      document.getElementById('preview-year').textContent = e.target.value || currentYear;
+    });
+    
+    titleInput.addEventListener('input', (e) => {
+      document.getElementById('preview-title').textContent = e.target.value || 'Milestone Title';
+    });
+    
+    descInput.addEventListener('input', (e) => {
+      document.getElementById('preview-description').textContent = e.target.value || 'Milestone description will appear here...';
+      document.getElementById('char-count').textContent = e.target.value.length;
+      
+      // Warn if approaching limit
+      if (e.target.value.length > 270) {
+        document.getElementById('char-count').style.color = '#e57373';
+      } else {
+        document.getElementById('char-count').style.color = 'var(--muted)';
+      }
+    });
+    
+    // Form submission
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
       this.saveTimeline(new FormData(e.target), index);
     });

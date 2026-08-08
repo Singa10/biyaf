@@ -1,0 +1,202 @@
+/* Theme Variables for Login Page */
+:root[data-theme="dark"] {
+  --login-bg-primary: #0a0a0a;
+  --login-bg-secondary: #1a1a1a;
+  --login-bg-tertiary: rgba(20, 20, 20, 0.95);
+  --login-text-primary: #e5e5e5;
+  --login-text-secondary: #999999;
+  --login-gold: #c29e59;
+  --login-gold-light: #d4b16f;
+  --login-gold-dim: #a88645;
+  --login-border: rgba(194, 158, 89, 0.2);
+  --login-pattern-opacity: 0.03;
+  --login-glass-bg: rgba(255, 255, 255, 0.03);
+  --login-glass-hover: rgba(255, 255, 255, 0.05);
+  --login-shape-border: rgba(194, 158, 89, 0.1);
+}
+
+:root[data-theme="light"] {
+  --login-bg-primary: #f8f8f8;
+  --login-bg-secondary: #ffffff;
+  --login-bg-tertiary: rgba(255, 255, 255, 0.95);
+  --login-text-primary: #1a1a1a;
+  --login-text-secondary: #666666;
+  --login-gold: #a88645;
+  --login-gold-light: #c29e59;
+  --login-gold-dim: #8a6e37;
+  --login-border: rgba(168, 134, 69, 0.3);
+  --login-pattern-opacity: 0.08;
+  --login-glass-bg: rgba(0, 0, 0, 0.03);
+  --login-glass-hover: rgba(0, 0, 0, 0.05);
+  --login-shape-border: rgba(168, 134, 69, 0.15);
+}
+
+/* Apply theme colors to login page */
+.luxury-login-container {
+  background: linear-gradient(135deg, var(--login-bg-primary) 0%, var(--login-bg-secondary) 50%, var(--login-bg-primary) 100%) !important;
+  transition: background 0.4s ease;
+}
+
+.luxury-bg-pattern {
+  opacity: var(--login-pattern-opacity) !important;
+}
+
+.shape {
+  border-color: var(--login-shape-border) !important;
+}
+
+.luxury-logo {
+  color: var(--login-text-primary) !important;
+}
+
+.luxury-logo span {
+  color: var(--login-gold) !important;
+}
+
+.luxury-tagline {
+  color: var(--login-gold-dim) !important;
+}
+
+.luxury-feature {
+  background: var(--login-glass-bg) !important;
+  border-color: var(--login-border) !important;
+}
+
+.luxury-feature:hover {
+  background: var(--login-glass-hover) !important;
+  border-color: var(--login-gold) !important;
+}
+
+.luxury-feature-icon {
+  background: linear-gradient(135deg, var(--login-gold-dim), var(--login-gold)) !important;
+  color: var(--login-bg-primary) !important;
+}
+
+.luxury-feature-text h3 {
+  color: var(--login-text-primary) !important;
+}
+
+.luxury-feature-text p {
+  color: var(--login-text-secondary) !important;
+}
+
+.luxury-right-side {
+  background: var(--login-bg-tertiary) !important;
+  border-left-color: var(--login-border) !important;
+}
+
+.corner-decoration {
+  border-color: var(--login-gold-dim) !important;
+}
+
+.luxury-form-header h1 {
+  color: var(--login-text-primary) !important;
+}
+
+.luxury-form-header p {
+  color: var(--login-text-secondary) !important;
+}
+
+.luxury-label {
+  color: var(--login-gold) !important;
+}
+
+.luxury-input {
+  background: var(--login-glass-bg) !important;
+  border-color: var(--login-border) !important;
+  color: var(--login-text-primary) !important;
+}
+
+.luxury-input:focus {
+  background: var(--login-glass-hover) !important;
+  border-color: var(--login-gold) !important;
+}
+
+.luxury-input::placeholder {
+  color: var(--login-text-secondary) !important;
+}
+
+.luxury-input-icon {
+  color: var(--login-gold-dim) !important;
+}
+
+.luxury-toggle-password {
+  color: var(--login-text-secondary) !important;
+}
+
+.luxury-toggle-password:hover {
+  color: var(--login-gold) !important;
+}
+
+.luxury-checkbox label {
+  color: var(--login-text-secondary) !important;
+}
+
+.luxury-checkbox input[type="checkbox"] {
+  accent-color: var(--login-gold) !important;
+}
+
+.luxury-submit {
+  background: linear-gradient(135deg, var(--login-gold-dim), var(--login-gold)) !important;
+  color: var(--login-bg-primary) !important;
+}
+
+.luxury-submit::before {
+  background: linear-gradient(135deg, var(--login-gold), var(--login-gold-light)) !important;
+}
+
+.luxury-demo-info {
+  border-color: var(--login-border) !important;
+}
+
+.luxury-demo-info i {
+  color: var(--login-gold) !important;
+}
+
+.luxury-demo-info-text h4 {
+  color: var(--login-gold-light) !important;
+}
+
+.luxury-demo-info-text p {
+  color: var(--login-text-secondary) !important;
+}
+
+.demo-cred {
+  background: var(--login-glass-bg) !important;
+  color: var(--login-text-primary) !important;
+}
+
+.demo-cred i {
+  color: var(--login-gold-dim) !important;
+}
+
+.luxury-theme-toggle {
+  background: var(--login-glass-bg) !important;
+  border-color: var(--login-border) !important;
+}
+
+.luxury-theme-toggle:hover {
+  background: var(--login-glass-hover) !important;
+  border-color: var(--login-gold) !important;
+}
+
+.luxury-theme-toggle i {
+  color: var(--login-gold) !important;
+}
+
+/* Theme Icon Display */
+:root[data-theme="dark"] .luxury-theme-toggle .ri-moon-line {
+  display: none;
+}
+
+:root[data-theme="dark"] .luxury-theme-toggle .ri-sun-line {
+  display: block;
+}
+
+:root[data-theme="light"] .luxury-theme-toggle .ri-sun-line {
+  display: none;
+}
+
+:root[data-theme="light"] .luxury-theme-toggle .ri-moon-line {
+  display: block;
+}
