@@ -2,19 +2,19 @@
 const AdminData = {
   // Initialize default data if not exists
   init() {
-    if (!localStorage.getItem('biyaf_data')) {
+    if (!localStorage.getItem('biyaf_website_data')) {
       this.resetToDefaults();
     }
   },
 
   // Get all data
   getData() {
-    return JSON.parse(localStorage.getItem('biyaf_data') || '{}');
+    return JSON.parse(localStorage.getItem('biyaf_website_data') || '{}');
   },
 
   // Save all data
   saveData(data) {
-    localStorage.setItem('biyaf_data', JSON.stringify(data));
+    localStorage.setItem('biyaf_website_data', JSON.stringify(data));
     this.notifyFrontend();
   },
 
