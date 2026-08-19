@@ -2,9 +2,19 @@
 const AdminApp = {
   currentSection: 'dashboard',
 
-  init() {
+  async init() {
     try {
       console.log('AdminApp initializing...');
+      
+      // Wait for Supabase to be ready
+      if (!window.SupabaseClient) {
+        console.log('Waiting for Supabase...');
+        setTimeout(() => this.init(), 500);
+        return;
+      }
+      
+      // Initialize Supabase Data
+      await SupabaseData.init();
       
       // Hide loading indicator
       const loadingIndicator = document.getElementById('loading-indicator');
@@ -14,7 +24,7 @@ const AdminApp = {
       
       this.initUI();
       this.initTheme();
-      this.loadDashboard();
+      await this.loadDashboard();
       
       console.log('AdminApp initialized successfully');
     } catch (error) {
@@ -155,18 +165,20 @@ const AdminApp = {
   },
 
   // Load Dashboard
-  loadDashboard() {
+  async loadDashboard() {
     try {
       console.log('Loading dashboard...');
       
-      const data = AdminData.getData();
-      console.log('Data loaded:', data);
+      const data = await SupabaseData.getData();
+      console.log('Data loaded from Supabase:', data);
       
       if (!data || Object.keys(data).length === 0) {
         console.log('No data found, initializing defaults...');
-        AdminData.resetToDefaults();
-        const newData = AdminData.getData();
+        await SupabaseData.resetToDefaults();
+        const newData = await SupabaseData.getData();
         console.log('Default data created:', newData);
+        // Reload with new data
+        return this.loadDashboard();
       }
       
       const stats = (data && data.stats) ? data.stats : [];
@@ -464,10 +476,10 @@ const AdminApp = {
     input.click();
   },
 
-  // Placeholder for other sections
-  loadHeroSection() {
+  // Load Hero Section
+  async loadHeroSection() {
     try {
-      const hero = AdminData.getSection('hero') || {};
+      const hero = await SupabaseData.getSection('hero') || {};
       const content = document.getElementById('admin-content');
       
       content.innerHTML = `
