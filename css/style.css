@@ -916,3 +916,230 @@ button, input, textarea, select{ font-family: var(--font-body); }
     font-size: .58rem;
   }
 }
+
+/* ===================== LANGUAGE SELECTOR ===================== */
+.lang-selector{
+  position: relative;
+}
+
+.lang-trigger{
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .9rem;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  color: var(--gold);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  transition: all .35s;
+  min-width: 90px;
+  justify-content: space-between;
+}
+
+.lang-trigger:hover{
+  background: var(--bg-panel-2);
+  border-color: var(--gold-dim);
+  transform: translateY(-1px);
+}
+
+.lang-trigger i{
+  font-size: .9rem;
+  transition: transform .3s;
+}
+
+.lang-selector.active .lang-trigger i{
+  transform: rotate(180deg);
+}
+
+.lang-dropdown{
+  position: absolute;
+  top: calc(100% + .6rem);
+  right: 0;
+  min-width: 180px;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: .5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all .3s;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0,0,0,.3);
+}
+
+[data-theme="light"] .lang-dropdown{
+  box-shadow: 0 8px 24px rgba(0,0,0,.1);
+}
+
+.lang-selector.active .lang-dropdown{
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.lang-option{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .75rem 1rem;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all .25s;
+  font-size: .85rem;
+  font-family: var(--font-body);
+}
+
+.lang-option:hover{
+  background: var(--bg-panel-2);
+  color: var(--ivory);
+}
+
+.lang-option.active{
+  background: rgba(201,162,77,.12);
+  color: var(--gold-light);
+  font-weight: 500;
+}
+
+[data-theme="light"] .lang-option.active{
+  background: rgba(184,145,46,.12);
+}
+
+.lang-option-left{
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+}
+
+.lang-flag{
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.lang-name{
+  display: flex;
+  flex-direction: column;
+  gap: .1rem;
+}
+
+.lang-name-primary{
+  font-size: .85rem;
+  line-height: 1;
+}
+
+.lang-name-native{
+  font-size: .7rem;
+  color: var(--muted);
+  line-height: 1;
+}
+
+.lang-option.active .lang-name-native{
+  color: var(--gold-dim);
+}
+
+.lang-check{
+  color: var(--gold);
+  font-size: 1rem;
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.lang-option.active .lang-check{
+  opacity: 1;
+}
+
+/* Mobile Language Selector */
+@media screen and (max-width: 900px){
+  .lang-trigger{
+    min-width: 75px;
+    padding: .45rem .75rem;
+    font-size: .68rem;
+  }
+  
+  .lang-flag{
+    width: 20px;
+    height: 20px;
+    font-size: .85rem;
+  }
+  
+  .lang-dropdown{
+    min-width: 160px;
+  }
+  
+  .lang-option{
+    padding: .65rem .85rem;
+    font-size: .8rem;
+  }
+  
+  .lang-name-primary{
+    font-size: .8rem;
+  }
+  
+  .lang-name-native{
+    font-size: .65rem;
+  }
+}
+
+/* Stats Card Enhancements for translations */
+.stat-card{
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  transition: all .3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .8rem;
+}
+
+.stat-card:hover{
+  border-color: var(--gold-dim);
+  transform: translateY(-4px);
+}
+
+.stat-card i{
+  font-size: 2.2rem;
+  color: var(--gold);
+  opacity: .8;
+}
+
+.stat-number{
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.stat-label{
+  font-family: var(--font-mono);
+  font-size: .66rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Reveal animations */
+.reveal{
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .6s ease-out, transform .6s ease-out;
+}
+
+.reveal.active{
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -131,3 +131,65 @@ if (contactForm) {
     }, 2600);
   });
 }
+
+/* ---------- Language Selector ---------- */
+const langSelector = document.getElementById('lang-selector');
+const langTrigger = document.getElementById('lang-trigger');
+const langDropdown = document.getElementById('lang-dropdown');
+const currentLangDisplay = document.getElementById('current-lang');
+
+if (langSelector && langTrigger && langDropdown) {
+  // Language labels
+  const langLabels = {
+    en: 'EN',
+    am: 'አማ',
+    om: 'OM'
+  };
+
+  // Update current language display
+  const updateCurrentLangDisplay = () => {
+    const currentLang = Translations.currentLang;
+    currentLangDisplay.textContent = langLabels[currentLang] || 'EN';
+  };
+
+  // Toggle dropdown
+  langTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    langSelector.classList.toggle('active');
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!langSelector.contains(e.target)) {
+      langSelector.classList.remove('active');
+    }
+  });
+
+  // Language option click handlers
+  document.querySelectorAll('.lang-option').forEach(option => {
+    option.addEventListener('click', () => {
+      const selectedLang = option.getAttribute('data-lang');
+      
+      // Update active state
+      document.querySelectorAll('.lang-option').forEach(opt => {
+        opt.classList.remove('active');
+      });
+      option.classList.add('active');
+      
+      // Set language
+      Translations.setLanguage(selectedLang);
+      
+      // Update display
+      updateCurrentLangDisplay();
+      
+      // Close dropdown
+      langSelector.classList.remove('active');
+    });
+  });
+
+  // Initialize display
+  updateCurrentLangDisplay();
+
+  // Listen for language changes from other sources
+  window.addEventListener('languageChanged', updateCurrentLangDisplay);
+}
