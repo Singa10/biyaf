@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supabase Connection Test - Biyaf</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  body {
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .test-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(194, 158, 89, 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+  .test-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .test-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 1.5rem;
+  }
+  .test-icon.success { background: #10b981; color: white; }
+  .test-icon.error { background: #ef4444; color: white; }
+  .test-icon.pending { background: #f59e0b; color: white; }
+  .test-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  .test-result {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .config-info {
+    background: rgba(194, 158, 89, 0.1);
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+  }
+  .config-row {
+    display: flex;
+    gap: 1rem;
+    margin: 0.5rem 0;
+  }
+  .config-label {
+    font-weight: 600;
+    min-width: 100px;
+    color: var(--gold);
+  }
+  .btn {
+    background: var(--gold);
+    color: #0a0a0a;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin: 0.5rem 0.5rem 0.5rem 0;
+  }
+  .btn:hover {
+    background: var(--gold-light);
+  }
+</style>
+</head>
+<body>
+  <h1>🔌 Supabase Connection Test</h1>
+  <p>This page tests the Supabase connection for Biyaf Architecture Studio website.</p>
+
+  <!-- Configuration Info -->
+  <div class="test-card">
+    <div class="test-header">
+      <div class="test-icon pending">⚙️</div>
+      <div class="test-title">Configuration</div>
+    </div>
+    <div class="config-info" id="config-display">
+      <div class="config-row">
+        <span class="config-label">URL:</span>
+        <span id="config-url">Loading...</span>
+      </div>
+      <div class="config-row">
+        <span class="config-label">API Key:</span>
+        <span id="config-key">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test 1: Library Loaded -->
+  <div class="test-card">
+    <div class="test-header">
+      <div class="test-icon pending" id="test1-icon">⏳</div>
+      <div class="test-title">Test 1: Supabase Library Loaded</div>
+    </div>
+    <div class="test-result" id="test1-result">Testing...</div>
+  </div>
+
+  <!-- Test 2: Client Initialized -->
+  <div class="test-card">
+    <div class="test-header">
+      <div class="test-icon pending" id="test2-icon">⏳</div>
+      <div class="test-title">Test 2: Supabase Client Initialized</div>
+    </div>
+    <div class="test-result" id="test2-result">Testing...</div>
+  </div>
+
+  <!-- Test 3: Database Connection -->
+  <div class="test-card">
+    <div class="test-header">
+      <div class="test-icon pending" id="test3-icon">⏳</div>
+      <div class="test-title">Test 3: Database Table Access</div>
+    </div>
+    <div class="test-result" id="test3-result">Testing...</div>
+  </div>
+
+  <!-- Test 4: Data Query -->
+  <div class="test-card">
+    <div class="test-header">
+      <div class="test-icon pending" id="test4-icon">⏳</div>
+      <div class="test-title">Test 4: Query Data</div>
+    </div>
+    <div class="test-result" id="test4-result">Testing...</div>
+  </div>
+
+  <!-- Actions -->
+  <div style="margin-top: 2rem;">
+    <button class="btn" onclick="runAllTests()">🔄 Re-run Tests</button>
+    <button class="btn" onclick="initializeDatabase()">📦 Initialize Database</button>
+    <button class="btn" onclick="location.href='index.html'">🏠 Back to Home</button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script>
+    // Helper functions
+    function setTestResult(testNum, success, message) {
+      const icon = document.getElementById(`test${testNum}-icon`);
+      const result = document.getElementById(`test${testNum}-result`);
+      
+      icon.className = `test-icon ${success ? 'success' : 'error'}`;
+      icon.textContent = success ? '✅' : '❌';
+      result.textContent = message;
+      result.style.color = success ? '#10b981' : '#ef4444';
+    }
+
+    // Display configuration
+    function displayConfig() {
+      const urlEl = document.getElementById('config-url');
+      const keyEl = document.getElementById('config-key');
+      
+      if (window.SupabaseClient && window.SupabaseClient.config) {
+        urlEl.textContent = window.SupabaseClient.config.url;
+        const key = window.SupabaseClient.config.key;
+        keyEl.textContent = key.substring(0, 20) + '...' + key.substring(key.length - 10);
+      } else {
+        urlEl.textContent = 'Not configured';
+        keyEl.textContent = 'Not configured';
+      }
+    }
+
+    // Test 1: Check if Supabase library is loaded
+    function test1_libraryLoaded() {
+      try {
+        if (typeof supabase !== 'undefined') {
+          setTestResult(1, true, 'SUCCESS: Supabase library is loaded from CDN\nVersion: @supabase/supabase-js@2');
+          return true;
+        } else {
+          setTestResult(1, false, 'ERROR: Supabase library is not loaded\nMake sure the CDN script is included in the HTML');
+          return false;
+        }
+      } catch (error) {
+        setTestResult(1, false, `ERROR: ${error.message}`);
+        return false;
+      }
+    }
+
+    // Test 2: Check if client is initialized
+    function test2_clientInitialized() {
+      try {
+        if (window.SupabaseClient && window.SupabaseClient.get) {
+          const client = window.SupabaseClient.get();
+          if (client) {
+            setTestResult(2, true, `SUCCESS: Supabase client initialized\nURL: ${window.SupabaseClient.config.url}\nClient object exists: ${!!client}`);
+            return true;
+          }
+        }
+        setTestResult(2, false, 'ERROR: Supabase client not initialized\nCheck supabase-config.js');
+        return false;
+      } catch (error) {
+        setTestResult(2, false, `ERROR: ${error.message}\n${error.stack}`);
+        return false;
+      }
+    }
+
+    // Test 3: Test database connection
+    async function test3_databaseConnection() {
+      try {
+        const client = window.SupabaseClient.get();
+        
+        // Try to query the table
+        const { data, error } = await client
+          .from('website_content')
+          .select('id')
+          .limit(1);
+        
+        if (error) {
+          // Check if it's a "table doesn't exist" error
+          if (error.message.includes('does not exist') || error.code === '42P01') {
+            setTestResult(3, false, `TABLE NOT FOUND: The 'website_content' table doesn't exist\n\nError: ${error.message}\n\n✅ Solution: Click "Initialize Database" button below`);
+          } else if (error.message.includes('JWT') || error.message.includes('Invalid API key')) {
+            setTestResult(3, false, `AUTHENTICATION ERROR: Invalid API key\n\nError: ${error.message}\n\n✅ Solution: Check your Supabase API key in supabase-config.js`);
+          } else {
+            setTestResult(3, false, `DATABASE ERROR: ${error.message}\n\nCode: ${error.code}\nDetails: ${error.details || 'N/A'}`);
+          }
+          return false;
+        }
+        
+        setTestResult(3, true, `SUCCESS: Database connection established\nTable 'website_content' is accessible\nRows found: ${data ? data.length : 0}`);
+        return true;
+      } catch (error) {
+        setTestResult(3, false, `ERROR: ${error.message}\n${error.stack}`);
+        return false;
+      }
+    }
+
+    // Test 4: Query actual data
+    async function test4_queryData() {
+      try {
+        const client = window.SupabaseClient.get();
+        
+        const { data, error, count } = await client
+          .from('website_content')
+          .select('*', { count: 'exact' });
+        
+        if (error) {
+          setTestResult(4, false, `QUERY ERROR: ${error.message}`);
+          return false;
+        }
+        
+        if (!data || data.length === 0) {
+          setTestResult(4, false, `NO DATA FOUND: The table exists but has no data\n\n✅ Solution: Click "Initialize Database" button to add default data`);
+          return false;
+        }
+        
+        const sections = data.map(item => item.section).join(', ');
+        setTestResult(4, true, `SUCCESS: Data query successful\n\nTotal records: ${count || data.length}\nSections found: ${sections}\n\nSample data:\n${JSON.stringify(data[0], null, 2).substring(0, 200)}...`);
+        return true;
+      } catch (error) {
+        setTestResult(4, false, `ERROR: ${error.message}\n${error.stack}`);
+        return false;
+      }
+    }
+
+    // Run all tests sequentially
+    async function runAllTests() {
+      console.log('🧪 Starting Supabase connection tests...');
+      displayConfig();
+      
+      // Test 1
+      const test1Pass = test1_libraryLoaded();
+      if (!test1Pass) return;
+      
+      // Test 2
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const test2Pass = test2_clientInitialized();
+      if (!test2Pass) return;
+      
+      // Test 3
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const test3Pass = await test3_databaseConnection();
+      
+      // Test 4 (run even if test 3 fails to show more details)
+      await new Promise(resolve => setTimeout(resolve, 500));
+      await test4_queryData();
+      
+      console.log('✅ All tests completed');
+    }
+
+    // Initialize database with default data
+    async function initializeDatabase() {
+      if (!confirm('This will create/reset the database table and add default data. Continue?')) {
+        return;
+      }
+      
+      try {
+        const client = window.SupabaseClient.get();
+        
+        // Check if SupabaseData is available
+        if (typeof SupabaseData !== 'undefined') {
+          console.log('Using SupabaseData module...');
+          await SupabaseData.resetToDefaults();
+          alert('✅ Database initialized successfully!\n\nRefreshing tests...');
+          setTimeout(() => runAllTests(), 1000);
+        } else {
+          alert('⚠️ SupabaseData module not loaded.\n\nPlease run the SQL from supabase-setup.sql in your Supabase SQL Editor first.');
+        }
+      } catch (error) {
+        alert(`❌ Error initializing database:\n\n${error.message}\n\nPlease run the SQL from supabase-setup.sql in your Supabase SQL Editor.`);
+        console.error('Database initialization error:', error);
+      }
+    }
+
+    // Run tests on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => runAllTests(), 1000);
+    });
+  </script>
+  <script src="admin/js/supabase-data.js"></script>
+</body>
+</html>

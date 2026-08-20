@@ -1,7 +1,7 @@
 // Supabase Configuration and Client Setup
 const SUPABASE_CONFIG = {
   url: 'https://wsmbuwkdtscihdolcfql.supabase.co',
-  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indzbwj1d2tkdHNjaWhkb2xjZnFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY0NDMyMzIsImV4cCI6MjA1MjAxOTIzMn0.SaoPTIdO0q0P5kNtok3GVw_cIXKScEV'
+  key: 'sb_publishable_t8zEgoynP0a-XZw9clCz2Q_4LN0CIcx'
 };
 
 // Initialize Supabase client

@@ -27,6 +27,46 @@
       <button class="nav-close" id="nav-close"><i class="ri-close-line"></i></button>
     </div>
     <div class="nav-actions">
+      <!-- Language Selector -->
+      <div class="lang-selector" id="lang-selector">
+        <button class="lang-trigger" id="lang-trigger" aria-label="Select language">
+          <span id="current-lang">EN</span>
+          <i class="ri-arrow-down-s-line"></i>
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown">
+          <div class="lang-option active" data-lang="en">
+            <div class="lang-option-left">
+              <div class="lang-flag">🇬🇧</div>
+              <div class="lang-name">
+                <span class="lang-name-primary">English</span>
+                <span class="lang-name-native">English</span>
+              </div>
+            </div>
+            <i class="ri-check-line lang-check"></i>
+          </div>
+          <div class="lang-option" data-lang="am">
+            <div class="lang-option-left">
+              <div class="lang-flag">🇪🇹</div>
+              <div class="lang-name">
+                <span class="lang-name-primary">Amharic</span>
+                <span class="lang-name-native">አማርኛ</span>
+              </div>
+            </div>
+            <i class="ri-check-line lang-check"></i>
+          </div>
+          <div class="lang-option" data-lang="om">
+            <div class="lang-option-left">
+              <div class="lang-flag">🇪🇹</div>
+              <div class="lang-name">
+                <span class="lang-name-primary">Afaan Oromo</span>
+                <span class="lang-name-native">Afaan Oromoo</span>
+              </div>
+            </div>
+            <i class="ri-check-line lang-check"></i>
+          </div>
+        </div>
+      </div>
+      
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
         <i class="ri-sun-line"></i>
         <i class="ri-moon-line"></i>
@@ -41,9 +81,9 @@
   <section class="page-hero">
     <div class="blueprint-bg"></div>
     <div class="container" style="position:relative;">
-      <span class="crumb reveal">Studio / Services</span>
-      <h1 class="reveal">What We <em style="font-style:italic;color:var(--gold);">Design</em></h1>
-      <p class="section-lead reveal">From first sketch to final inspection — Biyaf offers full architectural services for residential, commercial and public-sector clients.</p>
+      <span class="crumb reveal" data-i18n="servicesPage.pageTitle">Studio / Services</span>
+      <h1 class="reveal" data-i18n="services.title">What We <em style="font-style:italic;color:var(--gold);">Design</em></h1>
+      <p class="section-lead reveal" data-i18n="servicesPage.subtitle">From first sketch to final inspection — Biyaf offers full architectural services for residential, commercial and public-sector clients.</p>
     </div>
   </section>
 
@@ -53,36 +93,36 @@
       <div class="sheet-row service-card reveal">
         <span class="sheet-num service-number">A—01</span>
         <div class="sheet-content">
-          <h3 class="service-title">Architectural Design</h3>
-          <p class="service-description">Full concept-to-construction design services — from feasibility studies and concept massing through to detailed construction drawings, for homes, offices, retail and institutional buildings.</p>
+          <h3 class="service-title" data-i18n="services.service1Title">Architectural Design</h3>
+          <p class="service-description" data-i18n="servicesPage.service1Full">Full concept-to-construction design services — from feasibility studies and concept massing through to detailed construction drawings, for homes, offices, retail and institutional buildings.</p>
         </div>
       </div>
       <div class="sheet-row service-card reveal">
         <span class="sheet-num service-number">A—02</span>
         <div class="sheet-content">
-          <h3 class="service-title">Interior Architecture</h3>
-          <p class="service-description">Spatial planning, material palettes, lighting design and custom joinery that carry a building's architectural language through to its interior spaces.</p>
+          <h3 class="service-title" data-i18n="services.service2Title">Interior Architecture</h3>
+          <p class="service-description" data-i18n="servicesPage.service2Full">Spatial planning, material palettes, lighting design and custom joinery that carry a building's architectural language through to its interior spaces.</p>
         </div>
       </div>
       <div class="sheet-row service-card reveal">
         <span class="sheet-num service-number">A—03</span>
         <div class="sheet-content">
-          <h3 class="service-title">Urban &amp; Masterplanning</h3>
-          <p class="service-description">Site strategy, density and massing studies, and full masterplans for mixed-use and multi-phase developments.</p>
+          <h3 class="service-title" data-i18n="services.service3Title">Urban &amp; Masterplanning</h3>
+          <p class="service-description" data-i18n="servicesPage.service3Full">Site strategy, density and massing studies, and full masterplans for mixed-use and multi-phase developments.</p>
         </div>
       </div>
       <div class="sheet-row service-card reveal">
         <span class="sheet-num service-number">A—04</span>
         <div class="sheet-content">
-          <h3 class="service-title">Renovation &amp; Restoration</h3>
-          <p class="service-description">Adaptive reuse, structural renewal and sensitive restoration for existing buildings and heritage sites.</p>
+          <h3 class="service-title" data-i18n="services.service4Title">Renovation &amp; Restoration</h3>
+          <p class="service-description" data-i18n="servicesPage.service4Full">Adaptive reuse, structural renewal and sensitive restoration for existing buildings and heritage sites.</p>
         </div>
       </div>
       <div class="sheet-row reveal">
         <span class="sheet-num">A—05</span>
         <div class="sheet-content">
-          <h3>Construction Administration</h3>
-          <p>On-site oversight through the build phase, coordinating contractors and engineers to keep a project true to its drawings.</p>
+          <h3 data-i18n="servicesPage.service5Title">Construction Administration</h3>
+          <p data-i18n="servicesPage.service5Full">On-site oversight through the build phase, coordinating contractors and engineers to keep a project true to its drawings.</p>
         </div>
       </div>
     </div>
@@ -93,28 +133,28 @@
   <!-- PROCESS -->
   <section class="section" style="padding-top:0;">
     <div class="container">
-      <span class="eyebrow reveal">How We Work</span>
-      <h2 class="section-title reveal" style="margin-top:1rem; margin-bottom:2.5rem;">Our Process</h2>
+      <span class="eyebrow reveal" data-i18n="servicesPage.processTitle">How We Work</span>
+      <h2 class="section-title reveal" style="margin-top:1rem; margin-bottom:2.5rem;" data-i18n="servicesPage.processTitle">Our Process</h2>
       <div class="process-grid grid">
         <div class="process-step reveal">
           <span>01</span>
-          <h4>Site Read</h4>
-          <p>Topography, light, wind and access studies before any design work begins.</p>
+          <h4 data-i18n="servicesPage.process2">Site Analysis</h4>
+          <p data-i18n="approach.eyebrow">Topography, light, wind and access studies before any design work begins.</p>
         </div>
         <div class="process-step reveal">
           <span>02</span>
-          <h4>Concept</h4>
+          <h4 data-i18n="servicesPage.process3">Concept Design</h4>
           <p>Massing options and material direction, reviewed and refined with the client.</p>
         </div>
         <div class="process-step reveal">
           <span>03</span>
-          <h4>Documentation</h4>
+          <h4 data-i18n="servicesPage.process4">Development</h4>
           <p>Detailed drawings, structural coordination and permitting.</p>
         </div>
         <div class="process-step reveal">
           <span>04</span>
-          <h4>Construction</h4>
-          <p>On-site administration through to handover and inspection.</p>
+          <h4 data-i18n="servicesPage.process5">Construction</h4>
+          <p data-i18n="servicesPage.service5Full">On-site administration through to handover and inspection.</p>
         </div>
       </div>
     </div>
@@ -122,9 +162,9 @@
 
   <section class="cta-banner">
     <div class="container reveal">
-      <span class="eyebrow" style="justify-content:center;">Not sure which service you need?</span>
-      <h2 style="margin-top:1rem;">Tell us about your site — we'll take it from there.</h2>
-      <a href="contact.html" class="btn btn-solid">Get in Touch</a>
+      <span class="eyebrow" style="justify-content:center;" data-i18n="cta.eyebrow">Have a site in mind?</span>
+      <h2 style="margin-top:1rem;" data-i18n="cta.title">Let's put it on the drawing board.</h2>
+      <a href="contact.html" class="btn btn-solid" data-i18n="footer.getInTouch">Get in Touch</a>
     </div>
   </section>
 
@@ -134,7 +174,7 @@
   <div class="container footer-container grid">
     <div>
       <div class="footer-brand">BIY<span>AF</span></div>
-      <p class="footer-tag">An architecture studio in Bale Robe designing buildings that respond to site, climate and community.</p>
+      <p class="footer-tag" data-i18n="footer.tagline">An architecture studio in Bale Robe designing buildings that respond to site, climate and community.</p>
       <div class="footer-social">
         <a href="#" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
         <a href="#" aria-label="LinkedIn"><i class="ri-linkedin-line"></i></a>
@@ -142,39 +182,42 @@
       </div>
     </div>
     <div>
-      <div class="footer-title">Studio</div>
+      <div class="footer-title" data-i18n="footer.studioTitle">Studio</div>
       <ul class="footer-list">
-        <li><a href="about.html">About Us</a></li>
-        <li><a href="projects.html">Projects</a></li>
-        <li><a href="services.html">Services</a></li>
+        <li><a href="about.html" data-i18n="nav.about">About Us</a></li>
+        <li><a href="projects.html" data-i18n="nav.projects">Projects</a></li>
+        <li><a href="services.html" data-i18n="nav.services">Services</a></li>
       </ul>
     </div>
     <div>
-      <div class="footer-title">Contact</div>
+      <div class="footer-title" data-i18n="footer.contactTitle">Contact</div>
       <ul class="footer-list">
-        <li><a href="contact.html">Get in Touch</a></li>
+        <li><a href="contact.html" data-i18n="footer.getInTouch">Get in Touch</a></li>
         <li><a href="tel:+251900085951">+251 90 008 5951</a></li>
       </ul>
     </div>
     <div>
-      <div class="footer-title">Studio Hours</div>
+      <div class="footer-title" data-i18n="footer.hoursTitle">Studio Hours</div>
       <ul class="footer-list">
-        <li>Mon – Fri, 8:30 – 18:00</li>
-        <li>Wako Gutu Adebabay, Bale Robe</li>
+        <li data-i18n="footer.hours">Mon – Fri, 8:30 – 18:00</li>
+        <li data-i18n="footer.location">Wako Gutu Adebabay, Bale Robe</li>
       </ul>
     </div>
   </div>
   <div class="container footer-bottom">
-    <span>© 2026 Biyaf Architecture Studio. All rights reserved.</span>
-    <span>Design &amp; Build</span>
+    <span data-i18n="footer.copyright">© 2026 Biyaf Architecture Studio. All rights reserved.</span>
+    <span data-i18n="footer.credits">Design &amp; Build</span>
   </div>
 </footer>
 
 <a href="#" id="scroll-up" class="scrollup"><i class="ri-arrow-up-line"></i></a>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/scrollreveal@4/dist/scrollreveal.min.js"></script>
+<script src="js/supabase-config.js"></script>
 <script src="js/translations.js"></script>
 <script src="js/lang-helpers.js"></script>
+<script src="js/supabase-loader.js"></script>
 <script src="js/data-loader.js"></script>
 <script src="js/script.js"></script>
 </body>

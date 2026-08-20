@@ -27,6 +27,46 @@
       <button class="nav-close" id="nav-close"><i class="ri-close-line"></i></button>
     </div>
     <div class="nav-actions">
+      <!-- Language Selector -->
+      <div class="lang-selector" id="lang-selector">
+        <button class="lang-trigger" id="lang-trigger" aria-label="Select language">
+          <span id="current-lang">EN</span>
+          <i class="ri-arrow-down-s-line"></i>
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown">
+          <div class="lang-option active" data-lang="en">
+            <div class="lang-option-left">
+              <div class="lang-flag">🇬🇧</div>
+              <div class="lang-name">
+                <span class="lang-name-primary">English</span>
+                <span class="lang-name-native">English</span>
+              </div>
+            </div>
+            <i class="ri-check-line lang-check"></i>
+          </div>
+          <div class="lang-option" data-lang="am">
+            <div class="lang-option-left">
+              <div class="lang-flag">🇪🇹</div>
+              <div class="lang-name">
+                <span class="lang-name-primary">Amharic</span>
+                <span class="lang-name-native">አማርኛ</span>
+              </div>
+            </div>
+            <i class="ri-check-line lang-check"></i>
+          </div>
+          <div class="lang-option" data-lang="om">
+            <div class="lang-option-left">
+              <div class="lang-flag">🇪🇹</div>
+              <div class="lang-name">
+                <span class="lang-name-primary">Afaan Oromo</span>
+                <span class="lang-name-native">Afaan Oromoo</span>
+              </div>
+            </div>
+            <i class="ri-check-line lang-check"></i>
+          </div>
+        </div>
+      </div>
+      
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
         <i class="ri-sun-line"></i>
         <i class="ri-moon-line"></i>
@@ -41,57 +81,57 @@
   <section class="page-hero">
     <div class="blueprint-bg"></div>
     <div class="container" style="position:relative;">
-      <span class="crumb reveal">Studio / Projects</span>
-      <h1 class="reveal">Selected <em style="font-style:italic;color:var(--gold);">Work</em></h1>
-      <p class="section-lead reveal">86 buildings delivered across 12 cities — residential homes, commercial towers and public buildings, each shaped by its own site.</p>
+      <span class="crumb reveal" data-i18n="projects.pageTitle">Studio / Projects</span>
+      <h1 class="reveal" data-i18n="featured.title">Selected <em style="font-style:italic;color:var(--gold);">Work</em></h1>
+      <p class="section-lead reveal" data-i18n="projects.subtitle">86 buildings delivered across 12 cities — residential homes, commercial towers and public buildings, each shaped by its own site.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <div class="filters reveal">
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="residential">Residential</button>
-        <button class="filter-btn" data-filter="commercial">Commercial</button>
-        <button class="filter-btn" data-filter="public">Public</button>
+        <button class="filter-btn active" data-filter="all" data-i18n="projects.filterAll">All</button>
+        <button class="filter-btn" data-filter="residential" data-i18n="projects.filterResidential">Residential</button>
+        <button class="filter-btn" data-filter="commercial" data-i18n="projects.filterCommercial">Commercial</button>
+        <button class="filter-btn" data-filter="public" data-i18n="projects.filterPublic">Public</button>
       </div>
 
       <div class="grid-3 grid projects-grid">
 
         <div class="card reveal" data-category="residential">
           <div class="card-visual photo-frame gold-tint"><img src="images/project-kebena.jpeg" alt="Kebena Residence exterior"></div>
-          <div class="card-body"><h3>Kebena Residence</h3><p>Terraced concrete home stepping down a ridge, Addis Ababa.</p></div>
-          <div class="card-titleblock"><span>Residential · 2023</span><b>PRJ.014</b></div>
+          <div class="card-body"><h3 data-i18n="projects.project1Title">Kebena Residence</h3><p data-i18n="projects.project1Desc">A terraced concrete home stepping down a ridge in Bale Robe.</p></div>
+          <div class="card-titleblock"><span><span data-i18n="featured.residential">Residential</span> · 2023</span><b>PRJ.014</b></div>
         </div>
 
         <div class="card reveal" data-category="commercial">
           <div class="card-visual photo-frame gold-tint"><img src="images/project-bole.jpeg" alt="Bole Commerce Hub exterior"></div>
-          <div class="card-body"><h3>Bole Commerce Hub</h3><p>Mixed-use tower with ventilated stone facade and public plaza.</p></div>
-          <div class="card-titleblock"><span>Commercial · 2022</span><b>PRJ.021</b></div>
+          <div class="card-body"><h3 data-i18n="projects.project2Title">Bole Commerce Hub</h3><p data-i18n="projects.project2Desc">Mixed-use tower with a ventilated stone facade and public plaza.</p></div>
+          <div class="card-titleblock"><span><span data-i18n="featured.commercial">Commercial</span> · 2022</span><b>PRJ.021</b></div>
         </div>
 
         <div class="card reveal" data-category="public">
           <div class="card-visual photo-frame gold-tint"><img src="images/project-entoto.jpeg" alt="Entoto Cultural Pavilion exterior"></div>
-          <div class="card-body"><h3>Entoto Cultural Pavilion</h3><p>Timber-framed civic hall referencing traditional roof forms.</p></div>
-          <div class="card-titleblock"><span>Public · 2020</span><b>PRJ.009</b></div>
+          <div class="card-body"><h3 data-i18n="projects.project3Title">Entoto Cultural Pavilion</h3><p data-i18n="projects.project3Desc">A timber-framed civic hall referencing traditional roof forms.</p></div>
+          <div class="card-titleblock"><span><span data-i18n="featured.public">Public</span> · 2020</span><b>PRJ.009</b></div>
         </div>
 
         <div class="card reveal" data-category="residential">
           <div class="card-visual photo-frame gold-tint"><img src="images/project-sarbet.jpeg" alt="Sarbet Courtyard House exterior"></div>
-          <div class="card-body"><h3>Sarbet Courtyard House</h3><p>Two volumes wrapped around a shaded internal courtyard.</p></div>
-          <div class="card-titleblock"><span>Residential · 2021</span><b>PRJ.011</b></div>
+          <div class="card-body"><h3 data-i18n="projects.project4Title">Sarbet Courtyard House</h3><p data-i18n="projects.project4Desc">Two volumes wrapped around a shaded internal courtyard.</p></div>
+          <div class="card-titleblock"><span><span data-i18n="featured.residential">Residential</span> · 2021</span><b>PRJ.011</b></div>
         </div>
 
         <div class="card reveal" data-category="commercial">
           <div class="card-visual photo-frame gold-tint"><img src="images/project-mercato.jpeg" alt="Mercato Office Block exterior"></div>
-          <div class="card-body"><h3>Mercato Office Block</h3><p>A stacked-slab office building with deep shading fins.</p></div>
-          <div class="card-titleblock"><span>Commercial · 2024</span><b>PRJ.028</b></div>
+          <div class="card-body"><h3 data-i18n="projects.project5Title">Mercato Office Block</h3><p data-i18n="projects.project5Desc">A stacked-slab office building with deep shading fins.</p></div>
+          <div class="card-titleblock"><span><span data-i18n="featured.commercial">Commercial</span> · 2024</span><b>PRJ.028</b></div>
         </div>
 
         <div class="card reveal" data-category="public">
           <div class="card-visual photo-frame gold-tint"><img src="images/project-piassa.jpeg" alt="Piassa Public Library exterior"></div>
-          <div class="card-body"><h3>Piassa Public Library</h3><p>A single-storey reading hall with a folded timber roof.</p></div>
-          <div class="card-titleblock"><span>Public · 2025</span><b>PRJ.033</b></div>
+          <div class="card-body"><h3 data-i18n="projects.project6Title">Piassa Public Library</h3><p data-i18n="projects.project6Desc">A single-storey reading hall with a folded timber roof.</p></div>
+          <div class="card-titleblock"><span><span data-i18n="featured.public">Public</span> · 2025</span><b>PRJ.033</b></div>
         </div>
 
       </div>
@@ -100,9 +140,9 @@
 
   <section class="cta-banner">
     <div class="container reveal">
-      <span class="eyebrow" style="justify-content:center;">Have a project brief?</span>
-      <h2 style="margin-top:1rem;">Let's talk about your site.</h2>
-      <a href="contact.html" class="btn btn-solid">Start a Project</a>
+      <span class="eyebrow" style="justify-content:center;" data-i18n="cta.eyebrow">Have a site in mind?</span>
+      <h2 style="margin-top:1rem;" data-i18n="cta.title">Let's put it on the drawing board.</h2>
+      <a href="contact.html" class="btn btn-solid" data-i18n="hero.btnContact">Start a Project</a>
     </div>
   </section>
 
@@ -112,7 +152,7 @@
   <div class="container footer-container grid">
     <div>
       <div class="footer-brand">BIY<span>AF</span></div>
-      <p class="footer-tag">An architecture studio in Bale Robe designing buildings that respond to site, climate and community.</p>
+      <p class="footer-tag" data-i18n="footer.tagline">An architecture studio in Bale Robe designing buildings that respond to site, climate and community.</p>
       <div class="footer-social">
         <a href="#" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
         <a href="#" aria-label="LinkedIn"><i class="ri-linkedin-line"></i></a>
@@ -120,39 +160,42 @@
       </div>
     </div>
     <div>
-      <div class="footer-title">Studio</div>
+      <div class="footer-title" data-i18n="footer.studioTitle">Studio</div>
       <ul class="footer-list">
-        <li><a href="about.html">About Us</a></li>
-        <li><a href="projects.html">Projects</a></li>
-        <li><a href="services.html">Services</a></li>
+        <li><a href="about.html" data-i18n="nav.about">About Us</a></li>
+        <li><a href="projects.html" data-i18n="nav.projects">Projects</a></li>
+        <li><a href="services.html" data-i18n="nav.services">Services</a></li>
       </ul>
     </div>
     <div>
-      <div class="footer-title">Contact</div>
+      <div class="footer-title" data-i18n="footer.contactTitle">Contact</div>
       <ul class="footer-list">
-        <li><a href="contact.html">Get in Touch</a></li>
+        <li><a href="contact.html" data-i18n="footer.getInTouch">Get in Touch</a></li>
         <li><a href="tel:+251900085951">+251 90 008 5951</a></li>
       </ul>
     </div>
     <div>
-      <div class="footer-title">Studio Hours</div>
+      <div class="footer-title" data-i18n="footer.hoursTitle">Studio Hours</div>
       <ul class="footer-list">
-        <li>Mon – Fri, 8:30 – 18:00</li>
-        <li>Wako Gutu Adebabay, Bale Robe</li>
+        <li data-i18n="footer.hours">Mon – Fri, 8:30 – 18:00</li>
+        <li data-i18n="footer.location">Wako Gutu Adebabay, Bale Robe</li>
       </ul>
     </div>
   </div>
   <div class="container footer-bottom">
-    <span>© 2026 Biyaf Architecture Studio. All rights reserved.</span>
-    <span>Design &amp; Build</span>
+    <span data-i18n="footer.copyright">© 2026 Biyaf Architecture Studio. All rights reserved.</span>
+    <span data-i18n="footer.credits">Design &amp; Build</span>
   </div>
 </footer>
 
 <a href="#" id="scroll-up" class="scrollup"><i class="ri-arrow-up-line"></i></a>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/scrollreveal@4/dist/scrollreveal.min.js"></script>
+<script src="js/supabase-config.js"></script>
 <script src="js/translations.js"></script>
 <script src="js/lang-helpers.js"></script>
+<script src="js/supabase-loader.js"></script>
 <script src="js/data-loader.js"></script>
 <script src="js/script.js"></script>
 </body>
