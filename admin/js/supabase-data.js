@@ -6,9 +6,9 @@ const SupabaseData = {
   // Initialize - Create table if needed and load default data
   async init() {
     try {
-      const client = window.SupabaseClient.get();
+      const client = window.SupabaseClient?.get();
       if (!client) {
-        console.error('Supabase client not available');
+        console.warn('⚠️ Supabase client not available - using fallback mode');
         return false;
       }
 
@@ -16,14 +16,15 @@ const SupabaseData = {
       const hasData = await this.hasData();
       
       if (!hasData) {
-        console.log('No data found, initializing defaults...');
+        console.log('📦 No data found, initializing defaults...');
         await this.resetToDefaults();
       }
       
       console.log('✅ SupabaseData initialized');
       return true;
     } catch (error) {
-      console.error('Error initializing SupabaseData:', error);
+      console.error('❌ Error initializing SupabaseData:', error);
+      console.log('📦 Continuing in fallback mode');
       return false;
     }
   },
@@ -52,7 +53,12 @@ const SupabaseData = {
   // Get all data
   async getData() {
     try {
-      const client = window.SupabaseClient.get();
+      const client = window.SupabaseClient?.get();
+      if (!client) {
+        console.warn('⚠️ Supabase not configured, using default data');
+        return this.getDefaultData();
+      }
+
       const { data, error } = await client
         .from(this.tableName)
         .select('*')
@@ -69,9 +75,10 @@ const SupabaseData = {
         data.forEach(item => {
           dataObject[item.section] = item.content;
         });
+        return dataObject;
       }
       
-      return dataObject;
+      return this.getDefaultData();
     } catch (error) {
       console.error('Error in getData:', error);
       return this.getDefaultData();

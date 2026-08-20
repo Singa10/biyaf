@@ -2429,7 +2429,7 @@ const AdminApp = {
 };
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   try {
     console.log('DOM loaded, checking environment...');
     
@@ -2440,16 +2440,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isAdminPage) {
       console.log('Admin page detected');
       
+      // Wait for dependencies to load
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       // Ensure AdminData exists and is initialized
       if (typeof AdminData !== 'undefined') {
         console.log('AdminData found, initializing...');
-        AdminData.init();
+        await AdminData.init();
         
         // Check if data exists
-        const data = AdminData.getData();
+        const data = await AdminData.getData();
         if (!data || Object.keys(data).length === 0) {
           console.log('No data, creating defaults...');
-          AdminData.resetToDefaults();
+          await AdminData.resetToDefaults();
         }
       } else {
         console.error('AdminData not found!');
@@ -2458,7 +2461,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Initialize the app
       setTimeout(() => {
         AdminApp.init();
-      }, 500);
+      }, 100);
     }
   } catch (error) {
     console.error('Fatal error during initialization:', error);

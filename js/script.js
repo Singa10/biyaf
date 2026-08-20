@@ -61,7 +61,20 @@ if (scrollBtn) window.addEventListener('scroll', toggleScrollBtn);
 })();
 
 /* ---------- Scroll reveal ---------- */
+// Fallback: ensure reveal elements are visible even if ScrollReveal fails to load
+setTimeout(() => {
+  if (!window.ScrollReveal) {
+    console.warn('ScrollReveal not loaded, making all .reveal elements visible');
+    document.querySelectorAll('.reveal').forEach(el => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      el.style.visibility = 'visible';
+    });
+  }
+}, 100);
+
 if (window.ScrollReveal) {
+  console.log('✅ ScrollReveal loaded, initializing animations');
   const sr = ScrollReveal({
     origin: 'bottom',
     distance: '40px',
@@ -71,6 +84,16 @@ if (window.ScrollReveal) {
     reset: false
   });
   sr.reveal('.reveal', { interval: 120 });
+} else {
+  console.warn('⚠️ ScrollReveal not available - content will display without animations');
+  // Ensure all reveal elements are visible
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.reveal').forEach(el => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      el.style.visibility = 'visible';
+    });
+  });
 }
 
 /* ---------- Animated stat counters ---------- */

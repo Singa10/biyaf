@@ -3,7 +3,7 @@ const AdminAuth = {
   // Default credentials (in production, use proper backend authentication)
   credentials: {
     username: 'admin',
-    password: 'admin123' // In production, use hashed passwords
+    password: 'biyaf2024' // In production, use hashed passwords
   },
 
   // Check if user is logged in
@@ -143,7 +143,7 @@ const AdminAuth = {
           }, 100);
         } else {
           console.log('Login failed - invalid credentials');
-          this.showLoginError('Invalid username or password. Please use: admin / admin123');
+          this.showLoginError('Invalid username or password. Please use: admin / biyaf2024');
         }
       });
     } else {

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic Page</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #000;
+            color: #0f0;
+        }
+        .check { color: #0f0; }
+        .error { color: #f00; }
+        .info { color: #ff0; }
+        pre { background: #222; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Biyaf Website Diagnostic</h1>
+    <div id="results"></div>
+
+    <script>
+        const results = document.getElementById('results');
+        
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+
+        function logPre(title, content) {
+            const h3 = document.createElement('h3');
+            h3.textContent = title;
+            results.appendChild(h3);
+            const pre = document.createElement('pre');
+            pre.textContent = content;
+            results.appendChild(pre);
+        }
+
+        // Check localStorage
+        log('=== LOCALSTORAGE CHECK ===', 'info');
+        try {
+            const data = localStorage.getItem('biyaf_website_data');
+            if (data) {
+                log('✓ Data exists in localStorage', 'check');
+                const parsed = JSON.parse(data);
+                log(`✓ Data is valid JSON`, 'check');
+                log(`✓ Data size: ${(data.length / 1024).toFixed(2)} KB`, 'check');
+                logPre('Data Keys:', Object.keys(parsed).join(', '));
+                
+                // Check each section
+                Object.keys(parsed).forEach(key => {
+                    const value = parsed[key];
+                    if (Array.isArray(value)) {
+                        log(`  ${key}: ${value.length} items`, 'check');
+                    } else if (typeof value === 'object') {
+                        log(`  ${key}: object`, 'check');
+                    }
+                });
+            } else {
+                log('✗ No data in localStorage', 'error');
+                log('Run this in console to initialize:', 'info');
+                logPre('Initialization Code', 'window.location.href = "start-here.html"');
+            }
+        } catch (error) {
+            log('✗ Error reading localStorage: ' + error.message, 'error');
+        }
+
+        // Check scripts loaded
+        log('\n=== SCRIPTS CHECK ===', 'info');
+        const scripts = Array.from(document.querySelectorAll('script')).map(s => s.src || 'inline');
+        logPre('Scripts on Current Page:', scripts.join('\n'));
+
+        // Test data-loader
+        log('\n=== DATA LOADER TEST ===', 'info');
+        fetch('/js/data-loader.js')
+            .then(r => r.ok ? log('✓ data-loader.js accessible', 'check') : log('✗ data-loader.js not found', 'error'))
+            .catch(e => log('✗ Error loading data-loader.js: ' + e.message, 'error'));
+
+        // Check if index.html is accessible
+        log('\n=== PAGE ACCESSIBILITY ===', 'info');
+        fetch('/index.html')
+            .then(r => r.ok ? log('✓ index.html accessible', 'check') : log('✗ index.html not found', 'error'))
+            .catch(e => log('✗ Error loading index.html: ' + e.message, 'error'));
+
+        // Server info
+        log('\n=== SERVER INFO ===', 'info');
+        log(`Current URL: ${window.location.href}`, 'info');
+        log(`Protocol: ${window.location.protocol}`, 'info');
+        log(`Host: ${window.location.host}`, 'info');
+        log(`Pathname: ${window.location.pathname}`, 'info');
+
+        // Quick fix button
+        setTimeout(() => {
+            const fixDiv = document.createElement('div');
+            fixDiv.innerHTML = `
+                <hr>
+                <h2 style="color: #c9a962;">Quick Actions:</h2>
+                <button onclick="localStorage.clear(); alert('LocalStorage cleared'); location.reload();" style="padding: 10px 20px; margin: 5px; font-size: 16px;">Clear LocalStorage</button>
+                <button onclick="window.location.href='start-here.html'" style="padding: 10px 20px; margin: 5px; font-size: 16px; background: #c9a962; border: none; color: #000;">Initialize & Go to Website</button>
+                <button onclick="window.location.href='test-system.html'" style="padding: 10px 20px; margin: 5px; font-size: 16px;">Open Test Dashboard</button>
+                <button onclick="window.location.href='index.html'" style="padding: 10px 20px; margin: 5px; font-size: 16px;">Go to Homepage</button>
+            `;
+            results.appendChild(fixDiv);
+        }, 1000);
+    </script>
+</body>
+</html>

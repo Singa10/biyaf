@@ -2,8 +2,31 @@
 const AdminData = {
   // Initialize default data if not exists
   init() {
-    if (!localStorage.getItem('biyaf_website_data')) {
+    console.log('AdminData.init() called');
+    const existingData = localStorage.getItem('biyaf_website_data');
+    
+    if (!existingData) {
+      console.log('AdminData: No data found in localStorage, initializing with defaults...');
       this.resetToDefaults();
+    } else {
+      console.log('AdminData: Data already exists in localStorage');
+      try {
+        const parsed = JSON.parse(existingData);
+        console.log('AdminData: Parsed data keys:', Object.keys(parsed));
+        console.log('AdminData: Data sections:', {
+          hero: !!parsed.hero,
+          stats: !!parsed.stats,
+          projects: !!parsed.projects,
+          services: !!parsed.services,
+          about: !!parsed.about,
+          timeline: !!parsed.timeline,
+          contact: !!parsed.contact
+        });
+      } catch (error) {
+        console.error('AdminData: Error parsing existing data:', error);
+        console.log('AdminData: Resetting to defaults due to parse error');
+        this.resetToDefaults();
+      }
     }
   },
 

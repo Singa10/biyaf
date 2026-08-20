@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initialize Biyaf Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .success {
+            background: #4caf50;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .btn {
+            background: #c9a962;
+            color: #000;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background: #d4b576;
+        }
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Initialize Biyaf Mock Data</h1>
+    <p>This will initialize all mock data for the Biyaf Architecture Studio website.</p>
+    
+    <button class="btn" onclick="initializeData()">Initialize Mock Data</button>
+    <button class="btn" onclick="viewData()">View Current Data</button>
+    <button class="btn" onclick="clearData()">Clear All Data</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        function initializeData() {
+            const defaultData = {
+                hero: {
+                    eyebrow: 'Biyaf Architecture Studio',
+                    title: 'We design buildings that <em>hold their ground</em>.',
+                    description: 'Biyaf is a design-led architecture practice shaping residential, commercial and public buildings across Ethiopia — built on precision, material honesty, and a deep read of site and climate.',
+                    buttons: [
+                        { text: 'View Projects', link: 'projects.html', style: 'solid' },
+                        { text: 'Start a Project', link: 'contact.html', style: 'outline' }
+                    ],
+                    image: 'images/hero-residence.jpeg',
+                    imageAlt: 'Luxury modern residence with large windows at dusk, designed by Biyaf',
+                    coordinates: 'N 09°02\' E 38°45\'',
+                    figureLabel: 'FIG. 01 — RESIDENCE'
+                },
+                
+                stats: [
+                    { number: 14, label: 'Years in Practice', suffix: '' },
+                    { number: 86, label: 'Projects Delivered', suffix: '+' },
+                    { number: 12, label: 'Cities Built In', suffix: '' },
+                    { number: 23, label: 'Team Members', suffix: '' }
+                ],
+
+                projects: [
+                    {
+                        id: 1,
+                        title: 'Kebena Residence',
+                        description: 'A terraced concrete home stepping down a ridge in Bale Robe.',
+                        category: 'residential',
+                        year: '2023',
+                        projectCode: 'PRJ.014',
+                        image: 'images/project-kebena.jpeg'
+                    },
+                    {
+                        id: 2,
+                        title: 'Bole Commerce Hub',
+                        description: 'Mixed-use tower with a ventilated stone facade and public plaza.',
+                        category: 'commercial',
+                        year: '2022',
+                        projectCode: 'PRJ.021',
+                        image: 'images/project-bole.jpeg'
+                    },
+                    {
+                        id: 3,
+                        title: 'Entoto Cultural Pavilion',
+                        description: 'A timber-framed civic hall referencing traditional roof forms.',
+                        category: 'public',
+                        year: '2020',
+                        projectCode: 'PRJ.009',
+                        image: 'images/project-entoto.jpeg'
+                    },
+                    {
+                        id: 4,
+                        title: 'Sarbet Courtyard House',
+                        description: 'Two volumes wrapped around a shaded internal courtyard.',
+                        category: 'residential',
+                        year: '2021',
+                        projectCode: 'PRJ.011',
+                        image: 'images/project-sarbet.jpeg'
+                    },
+                    {
+                        id: 5,
+                        title: 'Mercato Office Block',
+                        description: 'A stacked-slab office building with deep shading fins.',
+                        category: 'commercial',
+                        year: '2024',
+                        projectCode: 'PRJ.028',
+                        image: 'images/project-mercato.jpeg'
+                    },
+                    {
+                        id: 6,
+                        title: 'Piassa Public Library',
+                        description: 'A single-storey reading hall with a folded timber roof.',
+                        category: 'public',
+                        year: '2025',
+                        projectCode: 'PRJ.033',
+                        image: 'images/project-piassa.jpeg'
+                    }
+                ],
+
+                services: [
+                    {
+                        id: 1,
+                        number: 'A—01',
+                        title: 'Architectural Design',
+                        description: 'Full concept-to-construction design services — from feasibility studies and concept massing through to detailed construction drawings, for homes, offices, retail and institutional buildings.'
+                    },
+                    {
+                        id: 2,
+                        number: 'A—02',
+                        title: 'Interior Architecture',
+                        description: 'Spatial planning, material palettes, lighting design and custom joinery that carry a building\'s architectural language through to its interior spaces.'
+                    },
+                    {
+                        id: 3,
+                        number: 'A—03',
+                        title: 'Urban & Masterplanning',
+                        description: 'Site strategy, density and massing studies, and full masterplans for mixed-use and multi-phase developments.'
+                    },
+                    {
+                        id: 4,
+                        number: 'A—04',
+                        title: 'Renovation & Restoration',
+                        description: 'Adaptive reuse, structural renewal and sensitive restoration for existing buildings and heritage sites.'
+                    },
+                    {
+                        id: 5,
+                        number: 'A—05',
+                        title: 'Construction Administration',
+                        description: 'On-site oversight through the build phase, coordinating contractors and engineers to keep a project true to its drawings.'
+                    }
+                ],
+
+                about: {
+                    story: {
+                        eyebrow: 'Our Story',
+                        title: 'Designing with the land, not over it',
+                        paragraphs: [
+                            'Biyaf was founded by a small group of architects who trained across Ethiopia and abroad, and came home with one question: why did so much new construction ignore the climate, materials and craft already available on site?',
+                            'Today the studio works across residential, commercial and public-sector commissions, but the founding question still shapes every project brief — read the site first, then design.'
+                        ],
+                        image: 'images/about-mansion.jpeg'
+                    },
+                    values: [
+                        { title: 'Site First', description: 'Topography, light and wind studies happen before a single wall is sketched.' },
+                        { title: 'Material Honesty', description: 'We build in materials that age well and are sourced close to where they\'re used.' },
+                        { title: 'Built to Last', description: 'Structures designed to outlive trends, with maintenance and climate resilience in mind.' }
+                    ]
+                },
+
+                timeline: [
+                    { year: '2012', title: 'Studio Founded', description: 'Biyaf opens as a three-person practice in Bole, taking on its first residential commissions.' },
+                    { year: '2016', title: 'First Commercial Tower', description: 'Delivery of a mixed-use building in Bale Robe introduces the studio\'s ventilated-facade approach.' },
+                    { year: '2020', title: 'Public Sector Work Begins', description: 'Biyaf is commissioned for its first civic project, a community pavilion referencing traditional roof forms.' },
+                    { year: '2026', title: '86+ Projects Delivered', description: 'The studio now works across 12 cities with a team of 23 architects, designers and engineers.' }
+                ],
+
+                contact: {
+                    address: 'Wako Gutu Adebabay, Bale Robe',
+                    city: 'Bale Robe, Ethiopia',
+                    phones: ['+251 90 008 5951', '+251 94 929 2418'],
+                    email: 'studio@biyaf.et',
+                    emailNote: 'Response within 2 business days',
+                    hours: 'Mon – Fri',
+                    hoursDetail: '8:30 AM – 6:00 PM',
+                    social: {
+                        instagram: '#',
+                        linkedin: '#',
+                        telegram: '#'
+                    }
+                }
+            };
+            
+            localStorage.setItem('biyaf_website_data', JSON.stringify(defaultData));
+            
+            document.getElementById('result').innerHTML = `
+                <div class="success">
+                    <h2>✅ Success!</h2>
+                    <p>Mock data has been initialized successfully!</p>
+                    <p><strong>Data includes:</strong></p>
+                    <ul>
+                        <li>Hero Section</li>
+                        <li>4 Statistics</li>
+                        <li>6 Projects</li>
+                        <li>5 Services</li>
+                        <li>Company Story & Values</li>
+                        <li>4 Timeline Events</li>
+                        <li>Contact Information</li>
+                    </ul>
+                    <p>
+                        <a href="index.html" style="color: #c9a962;">View Frontend →</a> | 
+                        <a href="admin/login.html" style="color: #c9a962;">Go to Admin →</a>
+                    </p>
+                </div>
+            `;
+        }
+        
+        function viewData() {
+            const data = localStorage.getItem('biyaf_website_data');
+            if (data) {
+                const parsed = JSON.parse(data);
+                document.getElementById('result').innerHTML = `
+                    <h3>Current Data:</h3>
+                    <pre>${JSON.stringify(parsed, null, 2)}</pre>
+                `;
+            } else {
+                document.getElementById('result').innerHTML = `
+                    <div style="background: #f44336; padding: 20px; border-radius: 5px;">
+                        <h2>⚠️ No Data Found</h2>
+                        <p>Click "Initialize Mock Data" to create the data.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function clearData() {
+            if (confirm('Are you sure you want to clear all data?')) {
+                localStorage.removeItem('biyaf_website_data');
+                document.getElementById('result').innerHTML = `
+                    <div style="background: #ff9800; padding: 20px; border-radius: 5px;">
+                        <h2>🗑️ Data Cleared</h2>
+                        <p>All data has been removed from localStorage.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Auto-initialize on page load if no data exists
+        window.addEventListener('load', () => {
+            const data = localStorage.getItem('biyaf_website_data');
+            if (!data) {
+                document.getElementById('result').innerHTML = `
+                    <div style="background: #2196f3; padding: 20px; border-radius: 5px; margin-top: 20px;">
+                        <h2>ℹ️ No Data Found</h2>
+                        <p>Click the "Initialize Mock Data" button above to set up your website data.</p>
+                    </div>
+                `;
+            } else {
+                document.getElementById('result').innerHTML = `
+                    <div class="success">
+                        <h2>✅ Data Already Exists</h2>
+                        <p>Your website data is already initialized!</p>
+                        <p>
+                            <a href="index.html" style="color: #000;">View Frontend →</a> | 
+                            <a href="admin/login.html" style="color: #000;">Go to Admin →</a>
+                        </p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

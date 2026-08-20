@@ -898,27 +898,6 @@ const AdminApp = {
               <input type="text" name="title" value="${item?.title || ''}" required>
             </div>
           </div>
-
-  showTimelineForm(item = null, index = null) {
-    const isEdit = item !== null;
-    const container = document.getElementById('timeline-form-container');
-    
-    container.innerHTML = `
-      <div class="content-section">
-        <div class="section-header">
-          <h2>${isEdit ? 'Edit' : 'Add'} Timeline Milestone</h2>
-        </div>
-        <form id="timeline-form" class="admin-form">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Year</label>
-              <input type="text" name="year" value="${item?.year || ''}" required>
-            </div>
-            <div class="form-group">
-              <label>Title</label>
-              <input type="text" name="title" value="${item?.title || ''}" required>
-            </div>
-          </div>
           <div class="form-group">
             <label>Description</label>
             <textarea name="description" rows="3" required>${item?.description || ''}</textarea>
@@ -1068,21 +1047,36 @@ const AdminApp = {
 
 // Initialize admin app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('admin-app.js: DOM loaded');
+  
   // Initialize data first
+  console.log('admin-app.js: Initializing AdminData...');
   AdminData.init();
   
   // Check if we have data, if not reset to defaults
   const currentData = AdminData.getData();
+  console.log('admin-app.js: Current data check:', currentData ? 'Data exists' : 'No data');
+  
   if (!currentData || Object.keys(currentData).length === 0) {
-    console.log('No data found, initializing with defaults...');
+    console.log('admin-app.js: No data found, initializing with defaults...');
     AdminData.resetToDefaults();
+  } else {
+    console.log('admin-app.js: Data found with keys:', Object.keys(currentData));
   }
   
   // Then initialize admin app
-  if (window.location.pathname.includes('admin') && !window.location.pathname.includes('login')) {
+  const isAdminPage = window.location.pathname.includes('admin') && !window.location.pathname.includes('login');
+  console.log('admin-app.js: Is admin page?', isAdminPage);
+  console.log('admin-app.js: Current pathname:', window.location.pathname);
+  
+  if (isAdminPage) {
+    console.log('admin-app.js: Initializing AdminApp...');
     // Small delay to ensure everything is loaded
     setTimeout(() => {
+      console.log('admin-app.js: Calling AdminApp.init()');
       AdminApp.init();
     }, 100);
+  } else {
+    console.log('admin-app.js: Not an admin page, skipping AdminApp initialization');
   }
 });

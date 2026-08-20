@@ -1134,8 +1134,11 @@ button, input, textarea, select{ font-family: var(--font-body); }
 
 /* Reveal animations */
 .reveal{
-  opacity: 0;
-  transform: translateY(30px);
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  /* Original animation code - disabled to ensure content visibility */
+  /* opacity: 0; */
+  /* transform: translateY(30px); */
   transition: opacity .6s ease-out, transform .6s ease-out;
 }
 

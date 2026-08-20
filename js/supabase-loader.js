@@ -1,12 +1,135 @@
 // Frontend Supabase Data Loader - Loads admin data from Supabase into website pages
 const SupabaseFrontendLoader = {
-  // Get data from Supabase
+  // Mock data fallback
+  getMockData() {
+    return {
+      hero: {
+        eyebrow: 'Biyaf Architecture Studio',
+        title: 'We design buildings that <em>hold their ground</em>.',
+        description: 'Biyaf is a design-led architecture practice shaping residential, commercial and public buildings across Ethiopia — built on precision, material honesty, and a deep read of site and climate.',
+        image: 'images/hero-residence.jpeg',
+        imageAlt: 'Luxury modern residence with large windows at dusk, designed by Biyaf',
+        coordinates: 'N 09°02\' E 38°45\'',
+        figureLabel: 'FIG. 01 — RESIDENCE'
+      },
+      stats: [
+        { number: 14, label: 'Years in Practice', suffix: '' },
+        { number: 86, label: 'Projects Delivered', suffix: '+' },
+        { number: 12, label: 'Cities Built In', suffix: '' },
+        { number: 23, label: 'Team Members', suffix: '' }
+      ],
+      projects: [
+        {
+          id: 1,
+          title: 'Kebena Residence',
+          description: 'A terraced concrete home stepping down a ridge in Bale Robe.',
+          category: 'residential',
+          year: '2023',
+          projectCode: 'PRJ.014',
+          image: 'images/project-kebena.jpeg'
+        },
+        {
+          id: 2,
+          title: 'Bole Commerce Hub',
+          description: 'Mixed-use tower with a ventilated stone facade and public plaza.',
+          category: 'commercial',
+          year: '2022',
+          projectCode: 'PRJ.021',
+          image: 'images/project-bole.jpeg'
+        },
+        {
+          id: 3,
+          title: 'Entoto Cultural Pavilion',
+          description: 'A timber-framed civic hall referencing traditional roof forms.',
+          category: 'public',
+          year: '2020',
+          projectCode: 'PRJ.009',
+          image: 'images/project-entoto.jpeg'
+        },
+        {
+          id: 4,
+          title: 'Sarbet Courtyard House',
+          description: 'Two volumes wrapped around a shaded internal courtyard.',
+          category: 'residential',
+          year: '2021',
+          projectCode: 'PRJ.011',
+          image: 'images/project-sarbet.jpeg'
+        },
+        {
+          id: 5,
+          title: 'Mercato Office Block',
+          description: 'A stacked-slab office building with deep shading fins.',
+          category: 'commercial',
+          year: '2024',
+          projectCode: 'PRJ.028',
+          image: 'images/project-mercato.jpeg'
+        },
+        {
+          id: 6,
+          title: 'Piassa Public Library',
+          description: 'A single-storey reading hall with a folded timber roof.',
+          category: 'public',
+          year: '2025',
+          projectCode: 'PRJ.033',
+          image: 'images/project-piassa.jpeg'
+        }
+      ],
+      services: [
+        {
+          id: 1,
+          number: 'A—01',
+          title: 'Architectural Design',
+          description: 'Full concept-to-construction design for residential, commercial and institutional buildings.'
+        },
+        {
+          id: 2,
+          number: 'A—02',
+          title: 'Interior Architecture',
+          description: 'Spatial planning, material selection and custom joinery that carries the building\'s language inward.'
+        },
+        {
+          id: 3,
+          number: 'A—03',
+          title: 'Urban & Masterplanning',
+          description: 'Site strategy, density studies and masterplans for mixed-use developments.'
+        },
+        {
+          id: 4,
+          number: 'A—04',
+          title: 'Renovation & Restoration',
+          description: 'Adaptive reuse and structural renewal for existing buildings and heritage sites.'
+        }
+      ],
+      timeline: [
+        { year: '2012', title: 'Studio Founded', description: 'Biyaf opens as a three-person practice in Bole, taking on its first residential commissions.' },
+        { year: '2016', title: 'First Commercial Tower', description: 'Delivery of a mixed-use building in Bale Robe introduces the studio\'s ventilated-facade approach.' },
+        { year: '2020', title: 'Public Sector Work Begins', description: 'Biyaf is commissioned for its first civic project, a community pavilion referencing traditional roof forms.' },
+        { year: '2026', title: '86+ Projects Delivered', description: 'The studio now works across 12 cities with a team of 23 architects, designers and engineers.' }
+      ],
+      contact: {
+        address: 'Wako Gutu Adebabay, Bale Robe',
+        city: 'Bale Robe, Ethiopia',
+        phones: ['+251 90 008 5951', '+251 94 929 2418'],
+        email: 'studio@biyaf.et',
+        emailNote: 'Response within 2 business days',
+        hours: 'Mon – Fri',
+        hoursDetail: '8:30 AM – 6:00 PM',
+        social: {
+          instagram: '#',
+          linkedin: '#',
+          telegram: '#'
+        }
+      }
+    };
+  },
+
+  // Get data from Supabase with fallback to mock data
   async getData() {
     try {
-      const client = window.SupabaseClient.get();
+      const client = window.SupabaseClient?.get();
       if (!client) {
-        console.error('Supabase client not available');
-        return null;
+        console.warn('⚠️ Supabase client not available, using mock data');
+        return this.getMockData();
       }
 
       const { data, error } = await client
@@ -15,8 +138,8 @@ const SupabaseFrontendLoader = {
         .order('section', { ascending: true });
       
       if (error) {
-        console.error('Error loading data from Supabase:', error);
-        return null;
+        console.warn('⚠️ Error loading from Supabase, using mock data:', error.message);
+        return this.getMockData();
       }
       
       // Convert array to object
@@ -25,19 +148,25 @@ const SupabaseFrontendLoader = {
         data.forEach(item => {
           dataObject[item.section] = item.content;
         });
+        console.log('✅ Data loaded from Supabase');
+        return dataObject;
+      } else {
+        console.warn('⚠️ No data in Supabase, using mock data');
+        return this.getMockData();
       }
-      
-      return dataObject;
     } catch (error) {
-      console.error('Error in getData:', error);
-      return null;
+      console.warn('⚠️ Error fetching from Supabase, using mock data:', error.message);
+      return this.getMockData();
     }
   },
 
   // Load Hero Section
   async loadHeroSection() {
     const data = await this.getData();
-    if (!data || !data.hero) return;
+    if (!data || !data.hero) {
+      console.warn('⚠️ No hero data available');
+      return;
+    }
 
     const hero = data.hero;
     
@@ -80,13 +209,16 @@ const SupabaseFrontendLoader = {
       figureLabel.textContent = hero.figureLabel;
     }
 
-    console.log('✅ Hero section loaded from Supabase');
+    console.log('✅ Hero section loaded (source: ' + (data._source || 'Supabase/Mock') + ')');
   },
 
   // Load Statistics
   async loadStatistics() {
     const data = await this.getData();
-    if (!data || !data.stats || !data.stats.length) return;
+    if (!data || !data.stats || !data.stats.length) {
+      console.warn('⚠️ No statistics data available');
+      return;
+    }
 
     const statsContainer = document.querySelector('.stats-grid');
     if (!statsContainer) return;
@@ -101,13 +233,16 @@ const SupabaseFrontendLoader = {
       </div>
     `).join('');
 
-    console.log('✅ Statistics loaded from Supabase');
+    console.log('✅ Statistics loaded');
   },
 
   // Load Projects
   async loadProjects() {
     const data = await this.getData();
-    if (!data || !data.projects || !data.projects.length) return;
+    if (!data || !data.projects || !data.projects.length) {
+      console.warn('⚠️ No projects data available');
+      return;
+    }
 
     const projectsGrid = document.querySelector('.projects-grid');
     if (!projectsGrid) return;
@@ -129,13 +264,16 @@ const SupabaseFrontendLoader = {
       </div>
     `).join('');
 
-    console.log('✅ Projects loaded from Supabase');
+    console.log('✅ Projects loaded');
   },
 
   // Load Services
   async loadServices() {
     const data = await this.getData();
-    if (!data || !data.services || !data.services.length) return;
+    if (!data || !data.services || !data.services.length) {
+      console.warn('⚠️ No services data available');
+      return;
+    }
 
     const servicesGrid = document.querySelector('.services-grid');
     if (!servicesGrid) return;
@@ -150,13 +288,16 @@ const SupabaseFrontendLoader = {
       </div>
     `).join('');
 
-    console.log('✅ Services loaded from Supabase');
+    console.log('✅ Services loaded');
   },
 
   // Load Timeline
   async loadTimeline() {
     const data = await this.getData();
-    if (!data || !data.timeline || !data.timeline.length) return;
+    if (!data || !data.timeline || !data.timeline.length) {
+      console.warn('⚠️ No timeline data available');
+      return;
+    }
 
     const timelineContainer = document.querySelector('.timeline-container');
     if (!timelineContainer) return;
@@ -175,13 +316,16 @@ const SupabaseFrontendLoader = {
       </div>
     `).join('');
 
-    console.log('✅ Timeline loaded from Supabase');
+    console.log('✅ Timeline loaded');
   },
 
   // Load Contact Information
   async loadContact() {
     const data = await this.getData();
-    if (!data || !data.contact) return;
+    if (!data || !data.contact) {
+      console.warn('⚠️ No contact data available');
+      return;
+    }
 
     const contact = data.contact;
 
@@ -255,19 +399,12 @@ const SupabaseFrontendLoader = {
       }
     }
 
-    console.log('✅ Contact information loaded from Supabase');
+    console.log('✅ Contact information loaded');
   },
 
   // Initialize - Load all data on page load
   async init() {
     console.log('🔄 SupabaseFrontendLoader initializing...');
-    
-    // Wait for Supabase to be ready
-    if (!window.SupabaseClient) {
-      console.warn('Waiting for Supabase client...');
-      setTimeout(() => this.init(), 500);
-      return;
-    }
     
     try {
       // Check which page we're on and load appropriate data
@@ -296,14 +433,18 @@ const SupabaseFrontendLoader = {
 
       console.log('✅ SupabaseFrontendLoader initialized successfully');
     } catch (error) {
-      console.error('Error initializing SupabaseFrontendLoader:', error);
+      console.error('❌ Error initializing SupabaseFrontendLoader:', error);
+      console.log('📦 Using mock data fallback');
     }
   },
 
   // Setup realtime subscriptions for live updates
   setupRealtimeUpdates() {
-    const client = window.SupabaseClient.get();
-    if (!client) return;
+    const client = window.SupabaseClient?.get();
+    if (!client) {
+      console.log('⏭️ Realtime updates not available (Supabase not configured)');
+      return;
+    }
 
     // Subscribe to changes in website_content table
     const subscription = client
