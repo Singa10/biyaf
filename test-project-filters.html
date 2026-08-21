@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Filters Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: system-ui;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #0a0a0a;
+      color: #fff;
+    }
+    h1 { color: #c29e59; }
+    .card {
+      background: rgba(255,255,255,0.05);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 1.5rem;
+    }
+    button {
+      background: #c29e59;
+      color: #0a0a0a;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .success { color: #10b981; }
+    .error { color: #ef4444; }
+    .info { color: #3b82f6; }
+    pre {
+      background: #000;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+    }
+    .test-result {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h1><i class="ri-filter-3-line"></i> Project Filters Test</h1>
+  
+  <div class="card">
+    <h2>Test 1: Check Projects Data</h2>
+    <button onclick="checkProjects()"><i class="ri-search-line"></i> Check Projects</button>
+    <div id="projects-result" class="test-result"></div>
+  </div>
+
+  <div class="card">
+    <h2>Test 2: Count by Category</h2>
+    <button onclick="countCategories()"><i class="ri-bar-chart-line"></i> Count Categories</button>
+    <div id="categories-result" class="test-result"></div>
+  </div>
+
+  <div class="card">
+    <h2>Test 3: Verify Filter Attributes</h2>
+    <p>This checks if projects have correct data-category attributes</p>
+    <button onclick="verifyAttributes()"><i class="ri-check-line"></i> Verify Attributes</button>
+    <div id="attributes-result" class="test-result"></div>
+  </div>
+
+  <div class="card">
+    <h2>Test 4: Open Projects Page</h2>
+    <p>Open the projects page and test the filters manually</p>
+    <a href="/projects.html" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #c29e59; color: #0a0a0a; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      <i class="ri-external-link-line"></i> Open Projects Page
+    </a>
+    <div style="margin-top: 1rem; padding: 1rem; background: rgba(194, 158, 89, 0.1); border-radius: 6px;">
+      <strong>What to test:</strong>
+      <ol style="margin: 0.5rem 0 0 1.5rem; line-height: 1.8;">
+        <li>Click "All" - should show all projects</li>
+        <li>Click "Residential" - should show only residential</li>
+        <li>Click "Commercial" - should show only commercial</li>
+        <li>Click "Public" - should show only public</li>
+        <li>Open console (F12) - should see filter logs</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    function checkProjects() {
+      const result = document.getElementById('projects-result');
+      try {
+        const data = localStorage.getItem('biyaf_website_data');
+        if (!data) {
+          result.innerHTML = '<p class="error"><i class="ri-close-circle-line"></i> No website data found</p>';
+          return;
+        }
+        
+        const parsed = JSON.parse(data);
+        const projects = parsed.projects || [];
+        
+        if (projects.length === 0) {
+          result.innerHTML = '<p class="error"><i class="ri-close-circle-line"></i> No projects in data</p>';
+          return;
+        }
+        
+        result.innerHTML = `
+          <p class="success"><i class="ri-checkbox-circle-line"></i> Found ${projects.length} projects</p>
+          <pre>${JSON.stringify(projects.map(p => ({
+            title: p.title,
+            category: p.category,
+            year: p.year,
+            projectCode: p.projectCode
+          })), null, 2)}</pre>
+        `;
+      } catch (error) {
+        result.innerHTML = `<p class="error"><i class="ri-close-circle-line"></i> ${error.message}</p>`;
+      }
+    }
+
+    function countCategories() {
+      const result = document.getElementById('categories-result');
+      try {
+        const data = localStorage.getItem('biyaf_website_data');
+        if (!data) {
+          result.innerHTML = '<p class="error"><i class="ri-close-circle-line"></i> No data</p>';
+          return;
+        }
+        
+        const parsed = JSON.parse(data);
+        const projects = parsed.projects || [];
+        
+        const counts = {
+          residential: 0,
+          commercial: 0,
+          public: 0,
+          other: 0
+        };
+        
+        projects.forEach(p => {
+          const cat = (p.category || '').toLowerCase();
+          if (counts.hasOwnProperty(cat)) {
+            counts[cat]++;
+          } else {
+            counts.other++;
+          }
+        });
+        
+        result.innerHTML = `
+          <p class="success"><i class="ri-checkbox-circle-line"></i> Category Breakdown:</p>
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem; line-height: 1.8;">
+            <li><strong>Residential:</strong> ${counts.residential}</li>
+            <li><strong>Commercial:</strong> ${counts.commercial}</li>
+            <li><strong>Public:</strong> ${counts.public}</li>
+            ${counts.other > 0 ? `<li class="error"><strong>Other/Unknown:</strong> ${counts.other}</li>` : ''}
+          </ul>
+          <p class="info">Total: ${projects.length} projects</p>
+        `;
+      } catch (error) {
+        result.innerHTML = `<p class="error"><i class="ri-close-circle-line"></i> ${error.message}</p>`;
+      }
+    }
+
+    function verifyAttributes() {
+      const result = document.getElementById('attributes-result');
+      try {
+        const data = localStorage.getItem('biyaf_website_data');
+        if (!data) {
+          result.innerHTML = '<p class="error"><i class="ri-close-circle-line"></i> No data</p>';
+          return;
+        }
+        
+        const parsed = JSON.parse(data);
+        const projects = parsed.projects || [];
+        
+        const issues = [];
+        const validCategories = ['residential', 'commercial', 'public'];
+        
+        projects.forEach((p, index) => {
+          if (!p.category) {
+            issues.push(`Project ${index + 1} (${p.title}) has no category`);
+          } else if (!validCategories.includes(p.category.toLowerCase())) {
+            issues.push(`Project ${index + 1} (${p.title}) has invalid category: "${p.category}"`);
+          }
+        });
+        
+        if (issues.length === 0) {
+          result.innerHTML = `
+            <p class="success"><i class="ri-checkbox-circle-line"></i> All ${projects.length} projects have valid categories!</p>
+            <p class="info">Filters should work correctly on the projects page.</p>
+          `;
+        } else {
+          result.innerHTML = `
+            <p class="error"><i class="ri-error-warning-line"></i> Found ${issues.length} issue(s):</p>
+            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; line-height: 1.8;">
+              ${issues.map(issue => `<li>${issue}</li>`).join('')}
+            </ul>
+            <p class="info">Fix these in admin dashboard → Projects</p>
+          `;
+        }
+      } catch (error) {
+        result.innerHTML = `<p class="error"><i class="ri-close-circle-line"></i> ${error.message}</p>`;
+      }
+    }
+
+    // Auto-run on load
+    window.addEventListener('DOMContentLoaded', () => {
+      checkProjects();
+      countCategories();
+    });
+  </script>
+</body>
+</html>

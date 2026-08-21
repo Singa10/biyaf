@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Image Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: system-ui;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #0a0a0a;
+      color: #fff;
+    }
+    h1 { color: #c29e59; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+    .card {
+      background: rgba(255,255,255,0.05);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .card h2 { margin: 0 0 1rem 0; font-size: 1.25rem; color: #c29e59; }
+    button {
+      background: #c29e59;
+      color: #0a0a0a;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin: 0.5rem 0.5rem 0.5rem 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    button:hover { opacity: 0.9; }
+    .success { color: #10b981; }
+    .error { color: #ef4444; }
+    .warning { color: #f59e0b; }
+    .info { color: #3b82f6; }
+    pre {
+      background: #000;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+    .status-ok { background: #10b981; color: white; }
+    .status-error { background: #ef4444; color: white; }
+    .status-warning { background: #f59e0b; color: white; }
+  </style>
+</head>
+<body>
+  <h1><i class="ri-image-line"></i> Complete Image System Test</h1>
+  <p>Test all aspects of the image system - uploaded and existing images</p>
+
+  <div class="grid">
+    <!-- Test 1: Uploaded Images -->
+    <div class="card">
+      <h2><i class="ri-upload-cloud-line"></i> Uploaded Images</h2>
+      <button onclick="checkUploaded()"><i class="ri-refresh-line"></i> Check Uploaded</button>
+      <div id="uploaded-result" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- Test 2: Hero Data -->
+    <div class="card">
+      <h2><i class="ri-home-heart-line"></i> Hero Image Data</h2>
+      <button onclick="checkHero()"><i class="ri-search-line"></i> Check Hero</button>
+      <div id="hero-result" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- Test 3: Projects Data -->
+    <div class="card">
+      <h2><i class="ri-building-line"></i> Projects Images</h2>
+      <button onclick="checkProjects()"><i class="ri-search-line"></i> Check Projects</button>
+      <div id="projects-result" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- Test 4: Storage Usage -->
+    <div class="card">
+      <h2><i class="ri-database-line"></i> Storage Usage</h2>
+      <button onclick="checkStorage()"><i class="ri-pie-chart-line"></i> Check Storage</button>
+      <div id="storage-result" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- Test 5: Test Image Load -->
+    <div class="card">
+      <h2><i class="ri-test-tube-line"></i> Test Load</h2>
+      <button onclick="testLoad()"><i class="ri-play-line"></i> Run Test</button>
+      <div id="test-result" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- Test 6: Quick Links -->
+    <div class="card">
+      <h2><i class="ri-links-line"></i> Quick Actions</h2>
+      <a href="/" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #c29e59; color: #0a0a0a; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; margin: 0.5rem 0.5rem 0.5rem 0;">
+        <i class="ri-home-line"></i> Homepage
+      </a>
+      <a href="/admin/" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; margin: 0.5rem 0.5rem 0.5rem 0;">
+        <i class="ri-admin-line"></i> Admin
+      </a>
+      <a href="/projects.html" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; margin: 0.5rem 0.5rem 0.5rem 0;">
+        <i class="ri-building-line"></i> Projects
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function checkUploaded() {
+      const result = document.getElementById('uploaded-result');
+      try {
+        const uploaded = localStorage.getItem('biyaf_uploaded_images');
+        if (!uploaded) {
+          result.innerHTML = '<p class="warning"><i class="ri-alert-line"></i> No uploaded images</p>';
+          return;
+        }
+        const images = JSON.parse(uploaded);
+        result.innerHTML = `
+          <p class="success"><i class="ri-checkbox-circle-line"></i> Found ${images.length} uploaded image(s)</p>
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem; line-height: 1.8;">
+            ${images.map(img => `<li>${img.filename} <span style="color: #888;">(${(img.dataUrl?.length / 1024 || 0).toFixed(1)}KB)</span></li>`).join('')}
+          </ul>
+        `;
+      } catch (error) {
+        result.innerHTML = `<p class="error"><i class="ri-close-circle-line"></i> ${error.message}</p>`;
+      }
+    }
+
+    function checkHero() {
+      const result = document.getElementById('hero-result');
+      try {
+        const data = localStorage.getItem('biyaf_website_data');
+        if (!data) {
+          result.innerHTML = '<p class="error"><i class="ri-close-circle-line"></i> No data found</p>';
+          return;
+        }
+        const parsed = JSON.parse(data);
+        const hero = parsed.hero;
+        
+        // Check if image is uploaded or existing
+        const uploaded = localStorage.getItem('biyaf_uploaded_images');
+        let isUploaded = false;
+        if (uploaded) {
+          const images = JSON.parse(uploaded);
+          const filename = hero.image?.split('/').pop();
+          isUploaded = images.some(img => img.filename === filename || img.path === hero.image);
+        }
+        
+        result.innerHTML = `
+          <p><strong>Image:</strong> ${hero.image || 'Not set'}</p>
+          <p><strong>Type:</strong> <span class="${isUploaded ? 'success' : 'info'}">${isUploaded ? '📦 Uploaded' : '📁 Existing'}</span></p>
+          <p><strong>Title:</strong> ${hero.title?.substring(0, 50) || 'Not set'}...</p>
+        `;
+      } catch (error) {
+        result.innerHTML = `<p class="error"><i class="ri-close-circle-line"></i> ${error.message}</p>`;
+      }
+    }
+
+    function checkProjects() {
+      const result = document.getElementById('projects-result');
+      try {
+        const data = localStorage.getItem('biyaf_website_data');
+        if (!data) {
+          result.innerHTML = '<p class="error"><i class="ri-close-circle-line"></i> No data found</p>';
+          return;
+        }
+        const parsed = JSON.parse(data);
+        const projects = parsed.projects || [];
+        
+        result.innerHTML = `
+          <p class="success"><i class="ri-checkbox-circle-line"></i> ${projects.length} project(s)</p>
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem; line-height: 1.8; max-height: 150px; overflow-y: auto;">
+            ${projects.map(p => `<li>${p.title} <span style="color: #888;">(${p.image?.split('/').pop()})</span></li>`).join('')}
+          </ul>
+        `;
+      } catch (error) {
+        result.innerHTML = `<p class="error"><i class="ri-close-circle-line"></i> ${error.message}</p>`;
+      }
+    }
+
+    function checkStorage() {
+      const result = document.getElementById('storage-result');
+      try {
+        const websiteData = localStorage.getItem('biyaf_website_data');
+        const uploadedImages = localStorage.getItem('biyaf_uploaded_images');
+        
+        const websiteSize = new Blob([websiteData || '']).size;
+        const imagesSize = new Blob([uploadedImages || '']).size;
+        const totalSize = websiteSize + imagesSize;
+        const totalMB = (totalSize / (1024 * 1024)).toFixed(2);
+        const limitMB = 5;
+        const percent = ((totalSize / (limitMB * 1024 * 1024)) * 100).toFixed(1);
+        
+        const statusClass = percent > 80 ? 'error' : percent > 50 ? 'warning' : 'success';
+        
+        result.innerHTML = `
+          <p><strong>Total:</strong> ${totalMB} MB <span class="${statusClass}">(${percent}% of ~${limitMB}MB)</span></p>
+          <p><strong>Website Data:</strong> ${(websiteSize / 1024).toFixed(1)} KB</p>
+          <p><strong>Uploaded Images:</strong> ${(imagesSize / 1024).toFixed(1)} KB</p>
+          ${percent > 80 ? '<p class="error"><i class="ri-alert-line"></i> Storage almost full!</p>' : ''}
+        `;
+      } catch (error) {
+        result.innerHTML = `<p class="error"><i class="ri-close-circle-line"></i> ${error.message}</p>`;
+      }
+    }
+
+    function testLoad() {
+      const result = document.getElementById('test-result');
+      result.innerHTML = '<p class="info"><i class="ri-loader-4-line"></i> Testing...</p>';
+      
+      setTimeout(() => {
+        try {
+          const data = localStorage.getItem('biyaf_website_data');
+          const uploaded = localStorage.getItem('biyaf_uploaded_images');
+          
+          const checks = [
+            { name: 'Website data exists', pass: !!data },
+            { name: 'Hero image set', pass: data && JSON.parse(data).hero?.image },
+            { name: 'Projects exist', pass: data && JSON.parse(data).projects?.length > 0 },
+            { name: 'Uploaded images', pass: uploaded && JSON.parse(uploaded).length > 0 }
+          ];
+          
+          const allPass = checks.every(c => c.pass);
+          
+          result.innerHTML = `
+            ${checks.map(c => `
+              <p class="${c.pass ? 'success' : 'warning'}">
+                <i class="${c.pass ? 'ri-checkbox-circle-line' : 'ri-error-warning-line'}"></i> 
+                ${c.name}
+              </p>
+            `).join('')}
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 1rem 0;">
+            <p class="${allPass ? 'success' : 'warning'}"><strong>${allPass ? '✅ All systems ready!' : '⚠️ Some issues found'}</strong></p>
+          `;
+        } catch (error) {
+          result.innerHTML = `<p class="error"><i class="ri-close-circle-line"></i> ${error.message}</p>`;
+        }
+      }, 500);
+    }
+
+    // Auto-run on load
+    window.addEventListener('DOMContentLoaded', () => {
+      checkUploaded();
+      checkHero();
+      checkProjects();
+      checkStorage();
+    });
+  </script>
+</body>
+</html>

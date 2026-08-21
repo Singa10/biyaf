@@ -328,29 +328,103 @@ const DataLoader = {
   // Load Projects
   loadProjects() {
     const data = this.getData();
-    if (!data || !data.projects || !data.projects.length) return;
+    if (!data || !data.projects || !data.projects.length) {
+      console.warn('⚠️ No projects data found');
+      return;
+    }
 
     const projectsGrid = document.querySelector('.projects-grid');
-    if (!projectsGrid) return;
+    if (!projectsGrid) {
+      console.error('❌ Projects grid container not found');
+      return;
+    }
 
-    projectsGrid.innerHTML = data.projects.map(project => `
-      <div class="project-card">
-        <div class="project-image">
-          <img src="${project.image}" alt="${project.title}" loading="lazy">
-        </div>
-        <div class="project-content">
-          <div class="project-meta">
-            <span class="project-code">${project.projectCode}</span>
-            <span class="project-category">${project.category}</span>
+    console.log(`📦 Loading ${data.projects.length} projects from admin data...`);
+
+    projectsGrid.innerHTML = data.projects.map(project => {
+      // Check if image is uploaded (in localStorage) or existing (on server)
+      const uploadedImage = this.getUploadedImage(project.image);
+      const imageSrc = uploadedImage && uploadedImage.dataUrl ? uploadedImage.dataUrl : project.image;
+      
+      // Log each project for debugging
+      console.log(`  - ${project.title} (${project.category}, ${project.year})`);
+      
+      return `
+        <div class="card reveal" data-category="${project.category}">
+          <div class="card-visual photo-frame gold-tint">
+            <img src="${imageSrc}" alt="${project.title}">
           </div>
-          <h3 class="project-title">${project.title}</h3>
-          <p class="project-description">${project.description}</p>
-          <div class="project-year">${project.year}</div>
+          <div class="card-body">
+            <h3>${project.title}</h3>
+            <p>${project.description}</p>
+          </div>
+          <div class="card-titleblock">
+            <span><span style="text-transform: capitalize;">${project.category}</span> · ${project.year}</span>
+            <b>${project.projectCode}</b>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
-    console.log('Projects loaded from admin data');
+    console.log('✅ Projects loaded from admin data (with uploaded image support)');
+    
+    // Reinitialize filters after loading new projects
+    this.initializeProjectFilters();
+  },
+
+  // Initialize project filter functionality
+  initializeProjectFilters() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('[data-category]');
+    
+    if (filterBtns.length === 0 || cards.length === 0) {
+      console.warn('⚠️ Filter buttons or project cards not found');
+      return;
+    }
+    
+    console.log(`🔧 Initializing filters: ${filterBtns.length} buttons, ${cards.length} cards`);
+    
+    // Remove old event listeners by cloning buttons
+    filterBtns.forEach(btn => {
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+    });
+    
+    // Get fresh references after cloning
+    const newFilterBtns = document.querySelectorAll('.filter-btn');
+    
+    // Add new event listeners
+    newFilterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Update active state
+        newFilterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Get filter value
+        const filter = btn.getAttribute('data-filter');
+        console.log(`🔍 Filtering by: ${filter}`);
+        
+        // Filter cards
+        let visibleCount = 0;
+        cards.forEach(card => {
+          const category = card.getAttribute('data-category');
+          const match = filter === 'all' || category === filter;
+          
+          if (match) {
+            card.classList.remove('project-hidden');
+            card.style.display = '';
+            visibleCount++;
+          } else {
+            card.classList.add('project-hidden');
+            card.style.display = 'none';
+          }
+        });
+        
+        console.log(`✅ Showing ${visibleCount} of ${cards.length} projects`);
+      });
+    });
+    
+    console.log('✅ Project filters initialized');
   },
 
   // Load Services
