@@ -181,34 +181,87 @@ const DataLoader = {
   // Load Hero Section
   loadHeroSection() {
     const data = this.getData();
-    if (!data || !data.hero) return;
+    console.log('📥 Loading hero section from data:', data);
+    
+    if (!data || !data.hero) {
+      console.warn('⚠️ No hero data found!');
+      return;
+    }
 
     const hero = data.hero;
+    console.log('🎯 Hero data to load:', hero);
     
     // Update eyebrow text
     const eyebrow = document.querySelector('.hero-eyebrow');
     if (eyebrow && hero.eyebrow) {
       eyebrow.textContent = hero.eyebrow;
+      console.log('✅ Updated eyebrow');
     }
 
     // Update title
     const title = document.querySelector('.hero-title');
     if (title && hero.title) {
       title.innerHTML = hero.title;
+      console.log('✅ Updated title');
     }
 
     // Update description
     const description = document.querySelector('.hero-description');
     if (description && hero.description) {
       description.textContent = hero.description;
+      console.log('✅ Updated description');
     }
 
     // Update hero image
-    const heroImage = document.querySelector('.hero-image-wrapper img');
+    console.log('🔍 Looking for hero image element...');
+    const heroImage = document.getElementById('hero-image') ||
+                      document.querySelector('.hero-image-wrapper img') || 
+                      document.querySelector('.hero-photo img') ||
+                      document.querySelector('.hero img');
+    
+    console.log('🖼️ Hero image element found:', heroImage);
+    console.log('🖼️ Current src:', heroImage ? heroImage.src : 'NOT FOUND');
+    console.log('🖼️ New src from data:', hero.image);
+    
     if (heroImage && hero.image) {
-      heroImage.src = hero.image;
+      const oldSrc = heroImage.src;
+      
+      // Check if this is an uploaded image (stored in localStorage)
+      const uploadedImage = this.getUploadedImage(hero.image);
+      
+      if (uploadedImage && uploadedImage.dataUrl) {
+        // Use base64 data for uploaded images
+        console.log('📦 Loading UPLOADED image from localStorage');
+        heroImage.src = uploadedImage.dataUrl;
+      } else {
+        // Use regular path for existing images
+        console.log('📁 Loading EXISTING image from server');
+        heroImage.src = hero.image;
+      }
+      
+      // Also update alt text if provided
       if (hero.imageAlt) {
         heroImage.alt = hero.imageAlt;
+      }
+      
+      console.log('✅ Hero image updated!');
+      console.log('   From:', oldSrc);
+      console.log('   To:', heroImage.src.substring(0, 100) + (heroImage.src.length > 100 ? '...' : ''));
+      
+      // Force reload if browser cached the image
+      heroImage.style.display = 'none';
+      heroImage.offsetHeight; // Force reflow
+      heroImage.style.display = 'block';
+      
+    } else {
+      if (!heroImage) {
+        console.error('❌ CRITICAL: Hero image element NOT FOUND!');
+        console.error('   Tried selectors: #hero-image, .hero-image-wrapper img, .hero-photo img, .hero img');
+        console.error('   Page structure may have changed');
+      }
+      if (!hero.image) {
+        console.error('❌ CRITICAL: No image path in hero data!');
+        console.error('   Hero data:', hero);
       }
     }
 
@@ -216,15 +269,39 @@ const DataLoader = {
     const coordinates = document.querySelector('.hero-coordinates');
     if (coordinates && hero.coordinates) {
       coordinates.textContent = hero.coordinates;
+      console.log('✅ Updated coordinates');
     }
 
     // Update figure label
     const figureLabel = document.querySelector('.hero-figure');
     if (figureLabel && hero.figureLabel) {
       figureLabel.textContent = hero.figureLabel;
+      console.log('✅ Updated figure label');
     }
 
-    console.log('Hero section loaded from admin data');
+    console.log('✅ Hero section loaded from admin data');
+  },
+
+  // Get uploaded image data from localStorage
+  getUploadedImage(imagePath) {
+    try {
+      const uploadedImages = localStorage.getItem('biyaf_uploaded_images');
+      if (!uploadedImages) return null;
+      
+      const images = JSON.parse(uploadedImages);
+      
+      // Find image by path or filename
+      const filename = imagePath.split('/').pop(); // Get filename from path
+      
+      return images.find(img => 
+        img.path === imagePath || 
+        img.filename === filename ||
+        img.originalName === filename
+      );
+    } catch (error) {
+      console.error('Error loading uploaded images:', error);
+      return null;
+    }
   },
 
   // Load Statistics
@@ -408,12 +485,18 @@ const DataLoader = {
     console.log('Current pathname:', window.location.pathname);
     console.log('Current href:', window.location.href);
     
+    // Listen for data updates from admin
+    window.addEventListener('biyaf_data_updated', () => {
+      console.log('🔄 Data updated from admin, reloading page content...');
+      this.reloadCurrentPage();
+    });
+    
     // Check which page we're on and load appropriate data
     const path = window.location.pathname.toLowerCase();
     const href = window.location.href.toLowerCase();
     
     // Homepage detection - multiple conditions
-    if (path.includes('index.html') || path.endsWith('/') || path.endsWith('/biyaf') || href.includes('localhost:3000/index')) {
+    if (path.includes('index.html') || path.endsWith('/') || path.endsWith('/biyaf') || href.includes('localhost:3000/index') || href.includes('localhost:8000')) {
       console.log('✅ Detected homepage - loading hero and stats');
       this.loadHeroSection();
       this.loadStatistics();
@@ -440,6 +523,41 @@ const DataLoader = {
     }
 
     console.log('✅ DataLoader initialized successfully');
+    
+    // Dispatch event to signal data loader is done
+    window.dispatchEvent(new CustomEvent('dataLoaderReady'));
+  },
+
+  // Reload current page content (called when data is updated)
+  reloadCurrentPage() {
+    const path = window.location.pathname.toLowerCase();
+    const href = window.location.href.toLowerCase();
+    
+    if (path.includes('index.html') || path.endsWith('/') || path.endsWith('/biyaf') || href.includes('localhost:3000/index') || href.includes('localhost:8000')) {
+      console.log('🔄 Reloading homepage content...');
+      this.loadHeroSection();
+      this.loadStatistics();
+    }
+    
+    if (path.includes('projects.html')) {
+      console.log('🔄 Reloading projects...');
+      this.loadProjects();
+    }
+    
+    if (path.includes('services.html')) {
+      console.log('🔄 Reloading services...');
+      this.loadServices();
+    }
+    
+    if (path.includes('about.html')) {
+      console.log('🔄 Reloading timeline...');
+      this.loadTimeline();
+    }
+    
+    if (path.includes('contact.html')) {
+      console.log('🔄 Reloading contact...');
+      this.loadContact();
+    }
   }
 };
 

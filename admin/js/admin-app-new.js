@@ -294,21 +294,25 @@ const AdminAppNew = {
       const formData = new FormData(e.target);
       const heroData = Object.fromEntries(formData);
       
+      console.log('📝 Submitting hero data:', heroData);
+      
       try {
         await this.dataAdapter.updateSection('hero', heroData);
-        this.showAlert('✅ Hero section updated successfully!', 'success');
+        this.showAlert('✅ Hero section updated successfully! Refresh the homepage to see changes.', 'success');
         
-        // Reload frontend if in same browser
-        setTimeout(() => {
-          window.open('/', '_blank');
-        }, 1000);
+        // Reload the hero section form to show the saved data
+        setTimeout(async () => {
+          await this.loadHeroSection();
+        }, 500);
       } catch (error) {
+        console.error('Save error:', error);
         this.showAlert('❌ Failed to save: ' + error.message, 'error');
       }
     });
   },
 
   async loadImagesSection() {
+    const allImages = ImageUploader.getAllImages();
     const content = document.getElementById('admin-content');
     
     content.innerHTML = `
@@ -326,26 +330,80 @@ const AdminAppNew = {
           <input type="file" id="image-upload" accept="image/*" multiple style="display: none;">
         </div>
 
-        <!-- Current Images -->
+        <!-- Upload Progress -->
+        <div id="upload-progress" style="display: none; background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.1);">
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+            <div class="spinner" style="width: 24px; height: 24px; border: 3px solid rgba(194, 158, 89, 0.3); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <span style="font-weight: 600;">Uploading images...</span>
+          </div>
+          <div id="progress-details" style="color: var(--muted); font-size: 0.9rem;"></div>
+        </div>
+
+        <!-- All Images -->
         <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-          <h3 style="margin: 0 0 1.5rem 0;">Current Images</h3>
-          <div id="images-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
-            ${this.getImagesList().map(img => `
-              <div style="position: relative; aspect-ratio: 1; background: rgba(255,255,255,0.03); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-                <img src="../${img}" style="width: 100%; height: 100%; object-fit: cover;">
-                <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 0.5rem; background: linear-gradient(transparent, rgba(0,0,0,0.8)); font-size: 0.75rem;">${img.split('/').pop()}</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0;">All Images (${allImages.length})</h3>
+            <div style="display: flex; gap: 0.5rem;">
+              <button onclick="AdminAppNew.loadImagesSection()" style="background: rgba(255,255,255,0.1); color: var(--ivory); padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="ri-refresh-line"></i> Refresh
+              </button>
+            </div>
+          </div>
+          <div id="images-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
+            ${allImages.map((img, index) => `
+              <div style="position: relative; background: rgba(255,255,255,0.03); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="aspect-ratio: 1; position: relative; overflow: hidden; background: #000;">
+                  ${img.type === 'uploaded' && img.dataUrl ? 
+                    `<img src="${img.dataUrl}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                    `<img src="../${img.path}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect fill=%22%23333%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2214%22>No Image</text></svg>';">`
+                  }
+                  <div style="position: absolute; top: 0.5rem; right: 0.5rem;">
+                    <span style="background: ${img.type === 'uploaded' ? 'var(--gold)' : '#3b82f6'}; color: #fff; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase;">
+                      ${img.type === 'uploaded' ? 'Uploaded' : 'Existing'}
+                    </span>
+                  </div>
+                </div>
+                <div style="padding: 1rem;">
+                  <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${img.filename}">${img.filename}</div>
+                  <div style="color: var(--muted); font-size: 0.75rem; margin-bottom: 0.75rem;">
+                    <code style="background: rgba(0,0,0,0.3); padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.7rem; display: block; overflow: hidden; text-overflow: ellipsis;">${img.path}</code>
+                  </div>
+                  <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="AdminAppNew.copyImagePath('${img.path}')" style="flex: 1; background: var(--gold); color: #0a0a0a; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.25rem;">
+                      <i class="ri-file-copy-line"></i> Copy Path
+                    </button>
+                    ${img.type === 'uploaded' ? `
+                      <button onclick="AdminAppNew.downloadImage(${index})" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                        <i class="ri-download-line"></i>
+                      </button>
+                      <button onclick="AdminAppNew.deleteImage('${img.filename}')" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                        <i class="ri-delete-bin-line"></i>
+                      </button>
+                    ` : ''}
+                  </div>
+                </div>
               </div>
             `).join('')}
           </div>
         </div>
 
-        <!-- Image Paths Info -->
+        <!-- Instructions -->
         <div style="background: rgba(194, 158, 89, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(194, 158, 89, 0.2); margin-top: 2rem;">
-          <h4 style="margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.5rem;"><i class="ri-information-line"></i> Image Path Format</h4>
-          <p style="margin: 0 0 0.5rem 0; color: var(--muted);">When referencing images in your content, use paths like:</p>
-          <code style="display: block; padding: 0.75rem; background: rgba(0,0,0,0.3); border-radius: 6px; margin-top: 0.5rem; font-family: monospace;">images/your-image-name.jpeg</code>
+          <h4 style="margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.5rem;"><i class="ri-information-line"></i> How to Use Images</h4>
+          <div style="color: var(--muted); line-height: 1.8;">
+            <p style="margin: 0 0 0.5rem 0;"><strong>1. Upload:</strong> Drag & drop or click to select images</p>
+            <p style="margin: 0 0 0.5rem 0;"><strong>2. Copy Path:</strong> Click "Copy Path" button on any image</p>
+            <p style="margin: 0 0 0.5rem 0;"><strong>3. Use in Content:</strong> Paste the path in Hero, Projects, or Services sections</p>
+            <p style="margin: 0 0 0.5rem 0;"><strong>Example:</strong> <code style="background: rgba(0,0,0,0.3); padding: 0.25rem 0.5rem; border-radius: 3px;">images/your-image.jpg</code></p>
+          </div>
         </div>
       </div>
+      
+      <style>
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      </style>
     `;
 
     // Setup upload functionality
@@ -374,42 +432,79 @@ const AdminAppNew = {
     
     fileInput.addEventListener('change', (e) => {
       this.handleImageUpload(e.target.files);
+      e.target.value = ''; // Reset so same file can be uploaded again
     });
   },
 
-  getImagesList() {
-    // Return list of current images
-    return [
-      'images/hero-residence.jpeg',
-      'images/about-mansion.jpeg',
-      'images/project-kebena.jpeg',
-      'images/project-bole.jpeg',
-      'images/project-entoto.jpeg',
-      'images/project-sarbet.jpeg',
-      'images/project-mercato.jpeg',
-      'images/project-piassa.jpeg'
-    ];
-  },
-
-  handleImageUpload(files) {
+  async handleImageUpload(files) {
     if (!files || files.length === 0) return;
     
-    // In a real implementation, this would upload to your server or cloud storage
-    // For now, show instructions
-    this.showAlert(`📋 To upload images:
-1. Place your images in the /images folder
-2. Use the filename in your content (e.g., images/my-image.jpg)
-3. The images will be available immediately`, 'info');
+    const progressDiv = document.getElementById('upload-progress');
+    const progressDetails = document.getElementById('progress-details');
     
-    // Show preview
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        console.log('Image loaded:', file.name);
-        // Here you would typically upload to server
-      };
-      reader.readAsDataURL(file);
+    progressDiv.style.display = 'block';
+    progressDetails.textContent = `Processing ${files.length} image(s)...`;
+    
+    try {
+      const results = await ImageUploader.handleFiles(files);
+      
+      const successful = results.filter(r => r.success);
+      const failed = results.filter(r => !r.success);
+      
+      progressDiv.style.display = 'none';
+      
+      if (successful.length > 0) {
+        this.showAlert(`✅ Successfully uploaded ${successful.length} image(s)!`, 'success');
+      }
+      
+      if (failed.length > 0) {
+        this.showAlert(`⚠️ ${failed.length} image(s) failed: ${failed.map(f => f.error).join(', ')}`, 'error');
+      }
+      
+      // Reload the images section
+      await this.loadImagesSection();
+      
+    } catch (error) {
+      progressDiv.style.display = 'none';
+      this.showAlert('❌ Upload failed: ' + error.message, 'error');
+    }
+  },
+
+  copyImagePath(path) {
+    navigator.clipboard.writeText(path).then(() => {
+      this.showAlert(`📋 Copied: ${path}`, 'success');
+    }).catch(() => {
+      // Fallback for older browsers
+      const textarea = document.createElement('textarea');
+      textarea.value = path;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      this.showAlert(`📋 Copied: ${path}`, 'success');
     });
+  },
+
+  downloadImage(index) {
+    const images = ImageUploader.getAllImages();
+    const image = images[index];
+    
+    if (image && image.dataUrl) {
+      ImageUploader.downloadImage(image);
+      this.showAlert(`✅ Downloaded: ${image.filename}`, 'success');
+    }
+  },
+
+  async deleteImage(filename) {
+    if (!confirm(`Are you sure you want to delete "${filename}"?`)) return;
+    
+    try {
+      ImageUploader.deleteImage(filename);
+      this.showAlert(`✅ Deleted: ${filename}`, 'success');
+      await this.loadImagesSection();
+    } catch (error) {
+      this.showAlert('❌ Delete failed: ' + error.message, 'error');
+    }
   },
 
   async loadProjectsSection() {

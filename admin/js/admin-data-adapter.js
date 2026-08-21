@@ -77,8 +77,11 @@ const AdminDataAdapter = {
   },
 
   async saveData(dataObject) {
+    console.log('💾 Saving data to localStorage...', dataObject);
+    
     // Always save to localStorage first
     localStorage.setItem('biyaf_website_data', JSON.stringify(dataObject));
+    console.log('✅ Data saved to localStorage');
     
     // Then save to Supabase if available
     if (this.useSupabase) {
@@ -87,6 +90,7 @@ const AdminDataAdapter = {
     
     // Notify frontend
     this.notifyFrontend();
+    console.log('📢 Frontend notified of data update');
   },
 
   async saveToSupabase(dataObject) {
@@ -123,6 +127,7 @@ const AdminDataAdapter = {
     const data = await this.loadData();
     data[section] = content;
     await this.saveData(data);
+    console.log(`✅ Section "${section}" updated:`, content);
   },
 
   async getSection(section) {

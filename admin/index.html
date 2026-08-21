@@ -101,9 +101,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-config.js"></script>
 <script src="js/supabase-data.js"></script>
+<script src="js/image-uploader.js"></script>
 <script src="js/admin-data-adapter.js"></script>
 <script src="js/admin-auth.js"></script>
 <script src="js/admin-app-new.js"></script>
+<script src="js/admin-hero-fix.js"></script>
 <style>
   @keyframes slideInRight {
     from { transform: translateX(100%); opacity: 0; }
@@ -112,6 +114,9 @@
   @keyframes slideOutRight {
     from { transform: translateX(0); opacity: 1; }
     to { transform: translateX(100%); opacity: 0; }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 </style>
 </body>

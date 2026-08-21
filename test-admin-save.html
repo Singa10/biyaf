@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Save Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #0a0a0a;
+      color: #fff;
+    }
+    h1 { color: #c29e59; }
+    .test-card {
+      background: rgba(255,255,255,0.05);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    button {
+      background: #c29e59;
+      color: #0a0a0a;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    button.secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 6px;
+      background: rgba(0,0,0,0.3);
+    }
+    .success { border-left: 4px solid #10b981; }
+    .error { border-left: 4px solid #ef4444; }
+    .info { border-left: 4px solid #3b82f6; }
+    pre {
+      background: #000;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
+    .step-number {
+      background: #c29e59;
+      color: #0a0a0a;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Admin Save Functionality Test</h1>
+  
+  <div class="test-card">
+    <h2>Automated Test Suite</h2>
+    <p>This will simulate saving hero data from the admin dashboard.</p>
+    <button onclick="runFullTest()"><i class="ri-play-line"></i> Run Complete Test</button>
+    <button class="secondary" onclick="clearResults()"><i class="ri-delete-bin-line"></i> Clear Results</button>
+    <div id="test-results"></div>
+  </div>
+
+  <div class="test-card">
+    <h2>Manual Verification Steps</h2>
+    <div class="step">
+      <div class="step-number">1</div>
+      <div>
+        <strong>Initialize Data</strong><br>
+        <button onclick="initData()"><i class="ri-restart-line"></i> Initialize Default Data</button>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <div>
+        <strong>Simulate Admin Save</strong><br>
+        <button onclick="simulateSave()"><i class="ri-save-line"></i> Simulate Hero Save</button>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <div>
+        <strong>Verify Data</strong><br>
+        <button onclick="verifyData()"><i class="ri-search-line"></i> Check Saved Data</button>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">4</div>
+      <div>
+        <strong>Test Frontend Load</strong><br>
+        <a href="/" target="_blank" style="display: inline-block; background: #c29e59; color: #0a0a0a; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600;">
+          <i class="ri-external-link-line"></i> Open Homepage
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <h2>Current localStorage Status</h2>
+    <button onclick="showStorage()"><i class="ri-database-line"></i> Show Storage</button>
+    <div id="storage-display"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="admin/js/admin-data-adapter.js"></script>
+
+  <script>
+    function addResult(message, type = 'info') {
+      const results = document.getElementById('test-results');
+      const div = document.createElement('div');
+      div.className = `result ${type}`;
+      div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${message}`;
+      results.appendChild(div);
+      results.scrollTop = results.scrollHeight;
+    }
+
+    function clearResults() {
+      document.getElementById('test-results').innerHTML = '';
+    }
+
+    function initData() {
+      const defaultData = {
+        hero: {
+          eyebrow: 'Biyaf Architecture Studio',
+          title: 'We design buildings that <em>hold their ground</em>.',
+          description: 'Biyaf is a design-led architecture practice shaping residential, commercial and public buildings across Ethiopia — built on precision, material honesty, and a deep read of site and climate.',
+          image: 'images/hero-residence.jpeg',
+          imageAlt: 'Luxury modern residence with large windows at dusk, designed by Biyaf',
+          coordinates: 'N 09°02\' E 38°45\'',
+          figureLabel: 'FIG. 01 — RESIDENCE'
+        },
+        stats: [
+          { number: 14, label: 'Years in Practice', suffix: '' },
+          { number: 86, label: 'Projects Delivered', suffix: '+' },
+          { number: 12, label: 'Cities Built In', suffix: '' },
+          { number: 23, label: 'Team Members', suffix: '' }
+        ]
+      };
+      
+      try {
+        localStorage.setItem('biyaf_website_data', JSON.stringify(defaultData));
+        addResult('✅ Default data initialized successfully', 'success');
+        console.log('Initialized data:', defaultData);
+      } catch (error) {
+        addResult('❌ Failed to initialize: ' + error.message, 'error');
+      }
+    }
+
+    async function simulateSave() {
+      const timestamp = new Date().toLocaleTimeString();
+      const testData = {
+        eyebrow: 'TEST UPDATE - Biyaf Studio',
+        title: `Hero Updated at ${timestamp}`,
+        description: 'This is a test update from the automated test suite. If you see this on the homepage, the save functionality is working correctly!',
+        image: 'images/hero-residence.jpeg',
+        imageAlt: 'Test image',
+        coordinates: 'N 09°02\' E 38°45\'',
+        figureLabel: 'FIG. TEST'
+      };
+
+      try {
+        addResult('📝 Attempting to save hero data...', 'info');
+        
+        // Get current data
+        let fullData = JSON.parse(localStorage.getItem('biyaf_website_data') || '{}');
+        
+        // Update hero section
+        fullData.hero = testData;
+        
+        // Save
+        localStorage.setItem('biyaf_website_data', JSON.stringify(fullData));
+        
+        // Dispatch event (like admin does)
+        window.dispatchEvent(new CustomEvent('biyaf_data_updated'));
+        
+        addResult('✅ Hero data saved successfully!', 'success');
+        addResult(`Title: "${testData.title}"`, 'info');
+        
+        console.log('Saved hero data:', testData);
+      } catch (error) {
+        addResult('❌ Save failed: ' + error.message, 'error');
+      }
+    }
+
+    function verifyData() {
+      try {
+        const data = localStorage.getItem('biyaf_website_data');
+        
+        if (!data) {
+          addResult('❌ No data found in localStorage', 'error');
+          return;
+        }
+        
+        const parsed = JSON.parse(data);
+        
+        if (!parsed.hero) {
+          addResult('❌ No hero section in data', 'error');
+          return;
+        }
+        
+        addResult('✅ Hero data verified in localStorage', 'success');
+        addResult(`<pre>${JSON.stringify(parsed.hero, null, 2)}</pre>`, 'info');
+        
+        console.log('Current data:', parsed);
+      } catch (error) {
+        addResult('❌ Verification failed: ' + error.message, 'error');
+      }
+    }
+
+    function showStorage() {
+      const display = document.getElementById('storage-display');
+      const data = localStorage.getItem('biyaf_website_data');
+      const images = localStorage.getItem('biyaf_uploaded_images');
+      
+      if (data) {
+        const parsed = JSON.parse(data);
+        const size = new Blob([data]).size;
+        display.innerHTML = `
+          <div class="result info">
+            <strong>biyaf_website_data:</strong> ${(size / 1024).toFixed(2)} KB<br>
+            <strong>Sections:</strong> ${Object.keys(parsed).join(', ')}
+            <pre>${JSON.stringify(parsed, null, 2)}</pre>
+          </div>
+        `;
+      } else {
+        display.innerHTML = '<div class="result error">No data in localStorage</div>';
+      }
+    }
+
+    async function runFullTest() {
+      clearResults();
+      addResult('🚀 Starting full test suite...', 'info');
+      
+      // Step 1
+      await new Promise(resolve => setTimeout(resolve, 500));
+      addResult('Step 1/4: Initializing data...', 'info');
+      initData();
+      
+      // Step 2
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      addResult('Step 2/4: Simulating save...', 'info');
+      await simulateSave();
+      
+      // Step 3
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      addResult('Step 3/4: Verifying data...', 'info');
+      verifyData();
+      
+      // Step 4
+      await new Promise(resolve => setTimeout(resolve, 500));
+      addResult('Step 4/4: Complete! Open homepage to see changes.', 'success');
+      addResult('<strong>Next:</strong> Click "Open Homepage" button above to verify changes appear on frontend', 'info');
+    }
+
+    // Auto-show storage on load
+    window.addEventListener('DOMContentLoaded', () => {
+      showStorage();
+    });
+  </script>
+</body>
+</html>

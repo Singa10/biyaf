@@ -531,10 +531,18 @@ const Translations = {
 
   // Update page with current language
   updatePage() {
+    // IMPORTANT: Load admin data from localStorage if available
+    const adminData = this.getAdminData();
+    
     // Update all elements with data-i18n attribute
     document.querySelectorAll('[data-i18n]').forEach(element => {
       const key = element.getAttribute('data-i18n');
-      const translation = this.t(key);
+      let translation = this.t(key);
+      
+      // Override with admin data if available (only for English)
+      if (this.currentLang === 'en' && adminData) {
+        translation = this.getAdminTranslation(key, adminData) || translation;
+      }
       
       // Check if element should use innerHTML (for <br> tags and <em> tags)
       if (element.hasAttribute('data-i18n-html')) {
@@ -563,18 +571,70 @@ const Translations = {
     window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: this.currentLang } }));
   },
 
+  // Get admin data from localStorage
+  getAdminData() {
+    try {
+      const data = localStorage.getItem('biyaf_website_data');
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error('Error loading admin data:', error);
+      return null;
+    }
+  },
+
+  // Get admin translation for a specific key
+  getAdminTranslation(key, adminData) {
+    // Map translation keys to admin data paths
+    const keyMap = {
+      'hero.eyebrow': adminData.hero?.eyebrow,
+      'hero.title': adminData.hero?.title,
+      'hero.description': adminData.hero?.description,
+      'hero.btnProjects': 'View Projects', // Keep buttons as-is
+      'hero.btnContact': 'Start a Project', // Keep buttons as-is
+      // Add more mappings as needed for other sections
+    };
+    
+    return keyMap[key];
+  },
+
   // Initialize
   init() {
     // Set initial language
     const savedLang = localStorage.getItem('biyaf_language') || 'en';
     this.currentLang = savedLang;
     
-    // Update page when DOM is ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => this.updatePage());
-    } else {
-      this.updatePage();
-    }
+    // Wait for data loader to finish, then update page
+    const updateWhenReady = () => {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          // Wait for dataLoaderReady event or timeout after 100ms
+          const timeoutId = setTimeout(() => {
+            console.log('⚠️ Translations: DataLoader timeout, applying translations anyway');
+            this.updatePage();
+          }, 100);
+          
+          window.addEventListener('dataLoaderReady', () => {
+            clearTimeout(timeoutId);
+            console.log('✅ Translations: DataLoader ready, applying translations with admin data');
+            this.updatePage();
+          }, { once: true });
+        });
+      } else {
+        // DOM already loaded
+        const timeoutId = setTimeout(() => {
+          console.log('⚠️ Translations: DataLoader timeout, applying translations anyway');
+          this.updatePage();
+        }, 100);
+        
+        window.addEventListener('dataLoaderReady', () => {
+          clearTimeout(timeoutId);
+          console.log('✅ Translations: DataLoader ready, applying translations with admin data');
+          this.updatePage();
+        }, { once: true });
+      }
+    };
+    
+    updateWhenReady();
   }
 };
 

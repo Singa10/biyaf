@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Update Test</title>
+  <style>
+    body {
+      font-family: system-ui;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #0a0a0a;
+      color: #fff;
+    }
+    .box {
+      background: rgba(255,255,255,0.05);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    button {
+      background: #c29e59;
+      color: #0a0a0a;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .success { color: #10b981; }
+    .error { color: #ef4444; }
+    pre {
+      background: #000;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+    }
+    img {
+      max-width: 300px;
+      border: 2px solid #c29e59;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🖼️ Hero Image Update Test</h1>
+  
+  <div class="box">
+    <h2>Step 1: Check Current Data</h2>
+    <button onclick="checkCurrentData()">🔍 Check localStorage</button>
+    <pre id="current-data"></pre>
+  </div>
+
+  <div class="box">
+    <h2>Step 2: Update Image Path</h2>
+    <p>Save different image paths to test:</p>
+    <button onclick="setImage('images/hero-residence.jpeg')">🏠 Set Default Image</button>
+    <button onclick="setImage('images/project-bole.jpeg')">🏢 Set Bole Project</button>
+    <button onclick="setImage('images/project-kebena.jpeg')">🏘️ Set Kebena Project</button>
+    <button onclick="setImage('images/about-mansion.jpeg')">🏛️ Set Mansion</button>
+    <pre id="set-result"></pre>
+  </div>
+
+  <div class="box">
+    <h2>Step 3: Test Image Loading</h2>
+    <p>Simulate what data-loader.js does:</p>
+    <button onclick="testImageLoad()">🔄 Load Image from Data</button>
+    <div id="test-result"></div>
+    <div style="margin-top: 1rem;">
+      <strong>Test Image Element:</strong><br>
+      <div class="hero-image-wrapper" style="margin-top: 0.5rem;">
+        <img src="" alt="Test hero image" id="test-image" style="display: none;">
+      </div>
+      <p id="image-status"></p>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Step 4: Check Actual Page</h2>
+    <p>Open the homepage and check the browser console:</p>
+    <a href="/" target="_blank" style="display: inline-block; background: #c29e59; color: #0a0a0a; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🌐 Open Homepage
+    </a>
+    <div style="margin-top: 1rem; padding: 1rem; background: rgba(194, 158, 89, 0.1); border-radius: 4px;">
+      <strong>In the homepage console, look for:</strong>
+      <ul style="margin: 0.5rem 0 0 1.5rem; line-height: 1.8;">
+        <li>"🖼️ Updating hero image from: ... to: ..."</li>
+        <li>"✅ Updated hero image: ..."</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function checkCurrentData() {
+      const data = localStorage.getItem('biyaf_website_data');
+      const result = document.getElementById('current-data');
+      
+      if (!data) {
+        result.innerHTML = '<span class="error">❌ No data in localStorage</span>';
+        return;
+      }
+      
+      try {
+        const parsed = JSON.parse(data);
+        result.textContent = JSON.stringify(parsed.hero, null, 2);
+        console.log('Current hero data:', parsed.hero);
+      } catch (error) {
+        result.innerHTML = `<span class="error">❌ Parse error: ${error.message}</span>`;
+      }
+    }
+
+    function setImage(imagePath) {
+      const data = localStorage.getItem('biyaf_website_data');
+      const result = document.getElementById('set-result');
+      
+      if (!data) {
+        result.innerHTML = '<span class="error">❌ No data in localStorage. Initialize it first from admin or test-hero-data.html</span>';
+        return;
+      }
+      
+      try {
+        const parsed = JSON.parse(data);
+        parsed.hero.image = imagePath;
+        localStorage.setItem('biyaf_website_data', JSON.stringify(parsed));
+        
+        result.innerHTML = `<span class="success">✅ Image updated to: ${imagePath}</span>\n<pre>${JSON.stringify(parsed.hero, null, 2)}</pre>`;
+        console.log('Updated hero data:', parsed.hero);
+      } catch (error) {
+        result.innerHTML = `<span class="error">❌ Update failed: ${error.message}</span>`;
+      }
+    }
+
+    function testImageLoad() {
+      const data = localStorage.getItem('biyaf_website_data');
+      const resultDiv = document.getElementById('test-result');
+      const statusDiv = document.getElementById('image-status');
+      const testImage = document.getElementById('test-image');
+      
+      if (!data) {
+        resultDiv.innerHTML = '<span class="error">❌ No data in localStorage</span>';
+        return;
+      }
+      
+      try {
+        const parsed = JSON.parse(data);
+        const heroImage = parsed.hero.image;
+        
+        resultDiv.innerHTML = `<span class="success">✅ Loading image: ${heroImage}</span>`;
+        
+        // Simulate data-loader.js behavior
+        testImage.src = heroImage;
+        testImage.style.display = 'block';
+        
+        testImage.onload = () => {
+          statusDiv.innerHTML = `<span class="success">✅ Image loaded successfully!</span><br>Dimensions: ${testImage.naturalWidth} x ${testImage.naturalHeight}px`;
+        };
+        
+        testImage.onerror = () => {
+          statusDiv.innerHTML = `<span class="error">❌ Image failed to load! Path may be incorrect: ${heroImage}</span>`;
+        };
+        
+        console.log('Test image src set to:', heroImage);
+      } catch (error) {
+        resultDiv.innerHTML = `<span class="error">❌ Load failed: ${error.message}</span>`;
+      }
+    }
+
+    // Auto-check on load
+    window.addEventListener('DOMContentLoaded', () => {
+      checkCurrentData();
+    });
+  </script>
+</body>
+</html>

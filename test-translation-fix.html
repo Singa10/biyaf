@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Translation Fix Test</title>
+  <style>
+    body {
+      font-family: system-ui;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #0a0a0a;
+      color: #fff;
+    }
+    .box {
+      background: rgba(255,255,255,0.05);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    button {
+      background: #c29e59;
+      color: #0a0a0a;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .success { color: #10b981; }
+    .error { color: #ef4444; }
+    pre {
+      background: #000;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔧 Translation System Fix Test</h1>
+  
+  <div class="box">
+    <h2>Step 1: Set Test Data</h2>
+    <p>This will save test data to localStorage that admin would save:</p>
+    <button onclick="setTestData()">💾 Save Test Hero Data</button>
+    <pre id="test-data-result"></pre>
+  </div>
+
+  <div class="box">
+    <h2>Step 2: Simulate Page Load</h2>
+    <p>This simulates what happens when the homepage loads:</p>
+    <button onclick="simulateLoad()">🔄 Simulate Homepage Load</button>
+    <pre id="load-result"></pre>
+  </div>
+
+  <div class="box">
+    <h2>Step 3: Check Final Result</h2>
+    <p>What content is actually displayed:</p>
+    <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+      <div style="margin-bottom: 1rem;">
+        <strong>Eyebrow:</strong> <span id="display-eyebrow" class="hero-eyebrow" data-i18n="hero.eyebrow">Loading...</span>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <strong>Title:</strong> <span id="display-title" class="hero-title" data-i18n="hero.title" data-i18n-html>Loading...</span>
+      </div>
+      <div>
+        <strong>Description:</strong> <span id="display-desc" class="hero-description" data-i18n="hero.description">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Expected vs Actual</h2>
+    <div id="comparison"></div>
+  </div>
+
+  <script src="js/translations.js"></script>
+  <script>
+    function setTestData() {
+      const testData = {
+        hero: {
+          eyebrow: 'TEST - Biyaf Studio',
+          title: 'This is a <em>TEST TITLE</em> from admin',
+          description: 'This is test description from the admin dashboard. If you see this, the fix is working!'
+        }
+      };
+      
+      localStorage.setItem('biyaf_website_data', JSON.stringify(testData));
+      document.getElementById('test-data-result').textContent = JSON.stringify(testData, null, 2);
+      console.log('✅ Test data saved:', testData);
+    }
+
+    function simulateLoad() {
+      const result = document.getElementById('load-result');
+      result.innerHTML = '<div class="info">Loading...</div>';
+      
+      setTimeout(() => {
+        // Check if data exists
+        const data = localStorage.getItem('biyaf_website_data');
+        if (!data) {
+          result.innerHTML = '<div class="error">❌ No data in localStorage!</div>';
+          return;
+        }
+        
+        const parsed = JSON.parse(data);
+        result.innerHTML = `
+          <div class="success">✅ Data loaded from localStorage</div>
+          <pre>${JSON.stringify(parsed.hero, null, 2)}</pre>
+        `;
+        
+        // Simulate data-loader.js behavior
+        if (parsed.hero) {
+          document.querySelector('.hero-eyebrow').textContent = parsed.hero.eyebrow;
+          document.querySelector('.hero-title').innerHTML = parsed.hero.title;
+          document.querySelector('.hero-description').textContent = parsed.hero.description;
+          console.log('✅ Content updated by data-loader simulation');
+        }
+        
+        // Now translations should preserve admin data
+        setTimeout(() => {
+          Translations.updatePage();
+          console.log('✅ Translations applied');
+          
+          setTimeout(checkResult, 100);
+        }, 100);
+      }, 100);
+    }
+
+    function checkResult() {
+      const eyebrow = document.querySelector('.hero-eyebrow').textContent;
+      const title = document.querySelector('.hero-title').innerHTML;
+      const desc = document.querySelector('.hero-description').textContent;
+      
+      const data = JSON.parse(localStorage.getItem('biyaf_website_data'));
+      const expected = data.hero;
+      
+      const comparison = document.getElementById('comparison');
+      
+      const eyebrowMatch = eyebrow === expected.eyebrow;
+      const titleMatch = title === expected.title;
+      const descMatch = desc === expected.description;
+      
+      comparison.innerHTML = `
+        <div style="margin-bottom: 0.5rem;">
+          <strong>Eyebrow:</strong> ${eyebrowMatch ? '<span class="success">✅ MATCH</span>' : '<span class="error">❌ MISMATCH</span>'}
+        </div>
+        <div style="margin-bottom: 0.5rem;">
+          <strong>Title:</strong> ${titleMatch ? '<span class="success">✅ MATCH</span>' : '<span class="error">❌ MISMATCH</span>'}
+        </div>
+        <div style="margin-bottom: 0.5rem;">
+          <strong>Description:</strong> ${descMatch ? '<span class="success">✅ MATCH</span>' : '<span class="error">❌ MISMATCH</span>'}
+        </div>
+        <div style="margin-top: 1rem; padding: 1rem; background: ${eyebrowMatch && titleMatch && descMatch ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)'}; border-radius: 4px;">
+          <strong>${eyebrowMatch && titleMatch && descMatch ? '✅ FIX IS WORKING!' : '❌ FIX NOT WORKING'}</strong><br>
+          ${eyebrowMatch && titleMatch && descMatch ? 'Admin data is preserved after translations apply' : 'Translations are overwriting admin data'}
+        </div>
+      `;
+    }
+
+    // Auto-run test
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('Test page loaded');
+    });
+  </script>
+</body>
+</html>
