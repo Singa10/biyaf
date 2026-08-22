@@ -448,6 +448,167 @@ const DataLoader = {
     console.log('Services loaded from admin data');
   },
 
+  // Load About Hero Section
+  loadAboutHero() {
+    const data = this.getData();
+    if (!data || !data.about || !data.about.hero) return;
+
+    const hero = data.about.hero;
+
+    // Update breadcrumb
+    const crumbEl = document.querySelector('.page-hero .crumb');
+    if (crumbEl && hero.crumb) {
+      crumbEl.textContent = hero.crumb;
+    }
+
+    // Update main title (can include HTML)
+    const titleEl = document.querySelector('.page-hero h1');
+    if (titleEl && hero.title) {
+      titleEl.innerHTML = hero.title;
+    }
+
+    // Update lead paragraph
+    const leadEl = document.querySelector('.page-hero .section-lead');
+    if (leadEl && hero.lead) {
+      leadEl.textContent = hero.lead;
+    }
+
+    console.log('About hero section loaded from admin data');
+  },
+
+  // Load About Story
+  loadAboutStory() {
+    const data = this.getData();
+    if (!data || !data.about || !data.about.story) return;
+
+    const story = data.about.story;
+
+    // Update story eyebrow
+    const eyebrowEl = document.querySelector('.about-split .eyebrow');
+    if (eyebrowEl && story.eyebrow) {
+      eyebrowEl.textContent = story.eyebrow;
+    }
+
+    // Update story title
+    const titleEl = document.querySelector('.about-split .section-title');
+    if (titleEl && story.title) {
+      titleEl.textContent = story.title;
+    }
+
+    // Update story paragraphs
+    const paragraphs = document.querySelectorAll('.about-split p[style*="color"]');
+    if (paragraphs.length >= 2) {
+      if (story.paragraph1) paragraphs[0].textContent = story.paragraph1;
+      if (story.paragraph2) paragraphs[1].textContent = story.paragraph2;
+    }
+
+    // Update story image
+    const imageCaptionEl = document.querySelector('.about-split .hero-coord');
+    if (imageCaptionEl && story.imageCaption) {
+      imageCaptionEl.textContent = story.imageCaption;
+    }
+
+    const imageEl = document.querySelector('.about-photo img');
+    if (imageEl) {
+      if (story.imagePath) {
+        // Check if it's an uploaded image
+        const uploadedImage = this.getUploadedImage(story.imagePath);
+        if (uploadedImage) {
+          console.log('📦 Loading UPLOADED about story image from localStorage');
+          imageEl.src = uploadedImage;
+        } else {
+          console.log('📁 Loading EXISTING about story image from server');
+          imageEl.src = story.imagePath;
+        }
+      }
+      if (story.imageAlt) {
+        imageEl.alt = story.imageAlt;
+      }
+    }
+
+    console.log('About story loaded from admin data');
+  },
+
+  // Load Values Section Headers
+  loadValuesSectionHeaders() {
+    const data = this.getData();
+    if (!data || !data.about || !data.about.valuesSectionTitle) return;
+
+    const headers = data.about.valuesSectionTitle;
+
+    // Find the values section (it's after the hairline and story section)
+    const valuesSections = document.querySelectorAll('.section');
+    let valuesSection = null;
+    
+    // The values section contains .values-grid
+    for (const section of valuesSections) {
+      if (section.querySelector('.values-grid')) {
+        valuesSection = section;
+        break;
+      }
+    }
+
+    if (!valuesSection) return;
+
+    // Update eyebrow
+    const eyebrowEl = valuesSection.querySelector('.eyebrow');
+    if (eyebrowEl && headers.eyebrow) {
+      eyebrowEl.textContent = headers.eyebrow;
+    }
+
+    // Update section title
+    const titleEl = valuesSection.querySelector('.section-title');
+    if (titleEl && headers.title) {
+      titleEl.textContent = headers.title;
+    }
+
+    console.log('Values section headers loaded from admin data');
+  },
+
+  // Load Core Values
+  loadValues() {
+    const data = this.getData();
+    if (!data || !data.about || !data.about.values || !data.about.values.length) return;
+
+    const valuesGrid = document.querySelector('.values-grid');
+    if (!valuesGrid) return;
+
+    valuesGrid.innerHTML = data.about.values.map(value => `
+      <div class="value-card reveal">
+        <h3>${value.title}</h3>
+        <p>${value.description}</p>
+      </div>
+    `).join('');
+
+    console.log('Core values loaded from admin data');
+  },
+
+  // Load Timeline Section Headers
+  loadTimelineSectionHeaders() {
+    const data = this.getData();
+    const timelineHeaders = data?.timelineHeaders || null;
+    
+    if (!timelineHeaders) return;
+
+    // Find the timeline section
+    const timelineSection = document.getElementById('timeline');
+    if (!timelineSection) return;
+
+    // Update eyebrow
+    const eyebrowEl = timelineSection.querySelector('.eyebrow');
+    if (eyebrowEl && timelineHeaders.eyebrow) {
+      eyebrowEl.textContent = timelineHeaders.eyebrow;
+    }
+
+    // Update section title
+    const titleEl = timelineSection.querySelector('.section-title');
+    if (titleEl && timelineHeaders.title) {
+      titleEl.textContent = timelineHeaders.title;
+    }
+
+    console.log('Timeline section headers loaded from admin data');
+  },
+
   // Load Timeline
   loadTimeline() {
     const data = this.getData();
@@ -588,6 +749,11 @@ const DataLoader = {
     
     if (path.includes('about.html')) {
       console.log('✅ Detected about page');
+      this.loadAboutHero();
+      this.loadAboutStory();
+      this.loadValuesSectionHeaders();
+      this.loadValues();
+      this.loadTimelineSectionHeaders();
       this.loadTimeline();
     }
     
@@ -624,7 +790,12 @@ const DataLoader = {
     }
     
     if (path.includes('about.html')) {
-      console.log('🔄 Reloading timeline...');
+      console.log('🔄 Reloading about page...');
+      this.loadAboutHero();
+      this.loadAboutStory();
+      this.loadValuesSectionHeaders();
+      this.loadValues();
+      this.loadTimelineSectionHeaders();
       this.loadTimeline();
     }
     

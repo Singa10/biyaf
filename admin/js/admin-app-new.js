@@ -101,6 +101,9 @@ const AdminAppNew = {
       case 'services':
         await this.loadServicesSection();
         break;
+      case 'about':
+        await this.loadAboutSection();
+        break;
       case 'timeline':
         await this.loadTimelineSection();
         break;
@@ -794,12 +797,479 @@ const AdminAppNew = {
     }
   },
 
-  async loadStatsSection() {
-    this.showAlert('Stats section - Coming soon!', 'info');
+  async loadAboutSection() {
+    // Get existing data or create default structure
+    let about = await this.dataAdapter.getSection('about') || {};
+    
+    // Ensure all required properties exist with defaults
+    about = {
+      hero: about.hero || {
+        crumb: 'Studio / About',
+        title: 'A practice built on <em style="font-style:italic;color:var(--gold);">listening to site</em> before drawing a line.',
+        lead: 'Biyaf began in a small studio in Bale Robe in 2012, with a simple conviction: a building should belong to its ground, its climate and the people who use it — not the other way around.'
+      },
+      story: about.story || {
+        eyebrow: 'Our Story',
+        title: 'Designing with the land, not over it',
+        paragraph1: 'Biyaf was founded by a small group of architects who trained across Ethiopia and abroad, and came home with one question: why did so much new construction ignore the climate, materials and craft already available on site?',
+        paragraph2: 'Today the studio works across residential, commercial and public-sector commissions, but the founding question still shapes every project brief — read the site first, then design.',
+        imageCaption: 'FIG. 02 — ELEGANT WHITE MANSION',
+        imagePath: 'images/about-mansion.jpeg',
+        imageAlt: 'Elegant white mansion with manicured landscaping'
+      },
+      values: about.values || [
+        { title: 'Site First', description: 'Topography, light and wind studies happen before a single wall is sketched.' },
+        { title: 'Material Honesty', description: 'We build in materials that age well and are sourced close to where they are used.' },
+        { title: 'Built to Last', description: 'Structures designed to outlive trends, with maintenance and climate resilience in mind.' }
+      ],
+      valuesSectionTitle: about.valuesSectionTitle || {
+        eyebrow: 'Our Philosophy',
+        title: 'Core Values'
+      }
+    };
+    
+    const content = document.getElementById('admin-content');
+    
+    content.innerHTML = `
+      <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="margin-bottom: 3rem;">
+          <h2 style="font-size: 2rem; margin: 0 0 0.5rem 0;">About Us Content</h2>
+          <p style="color: var(--muted); margin: 0;">Manage all content on the About Us page</p>
+        </div>
+
+        <!-- Hero Section -->
+        <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem;">
+          <h3 style="margin: 0 0 1.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ri-layout-top-line" style="color: var(--gold);"></i>
+            Page Hero Section
+          </h3>
+          <form id="hero-form" style="display: grid; gap: 1.5rem;">
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Breadcrumb (Crumb)</label>
+              <input type="text" name="crumb" value="${about.hero.crumb}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+            </div>
+
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Main Title (can include HTML)</label>
+              <textarea name="title" rows="2" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem; font-family: inherit; resize: vertical;">${about.hero.title}</textarea>
+              <small style="color: var(--muted); font-size: 0.875rem;">Tip: Use &lt;em&gt; tags for italic gold text</small>
+            </div>
+
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Lead Paragraph</label>
+              <textarea name="lead" rows="3" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem; font-family: inherit; resize: vertical;">${about.hero.lead}</textarea>
+            </div>
+
+            <button type="submit" style="background: var(--gold); color: #0a0a0a; padding: 1rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+              <i class="ri-save-line"></i> Save Hero Section
+            </button>
+          </form>
+        </div>
+
+        <!-- Story Section -->
+        <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem;">
+          <h3 style="margin: 0 0 1.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ri-book-line" style="color: var(--gold);"></i>
+            Our Story Section
+          </h3>
+          <form id="story-form" style="display: grid; gap: 1.5rem;">
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Eyebrow Text</label>
+              <input type="text" name="eyebrow" value="${about.story.eyebrow}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+            </div>
+
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Title</label>
+              <input type="text" name="title" value="${about.story.title}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+            </div>
+
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Paragraph 1</label>
+              <textarea name="paragraph1" rows="3" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem; font-family: inherit; resize: vertical;">${about.story.paragraph1}</textarea>
+            </div>
+
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Paragraph 2</label>
+              <textarea name="paragraph2" rows="3" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem; font-family: inherit; resize: vertical;">${about.story.paragraph2}</textarea>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; margin-top: 0.5rem;">
+              <h4 style="margin: 0 0 1rem 0; color: var(--gold); font-size: 1rem;">Story Image</h4>
+              <div style="display: grid; gap: 1rem;">
+                <div>
+                  <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Image Caption (Figure Label)</label>
+                  <input type="text" name="imageCaption" value="${about.story.imageCaption}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+                </div>
+                <div>
+                  <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Image Path</label>
+                  <input type="text" name="imagePath" value="${about.story.imagePath}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+                  <small style="color: var(--muted); font-size: 0.875rem;">Example: images/about-mansion.jpeg</small>
+                </div>
+                <div>
+                  <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Image Alt Text</label>
+                  <input type="text" name="imageAlt" value="${about.story.imageAlt}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" style="background: var(--gold); color: #0a0a0a; padding: 1rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+              <i class="ri-save-line"></i> Save Story Section
+            </button>
+          </form>
+        </div>
+
+        <!-- Values Section Headers -->
+        <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem;">
+          <h3 style="margin: 0 0 1.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ri-text" style="color: var(--gold);"></i>
+            Values Section Headers
+          </h3>
+          <form id="values-headers-form" style="display: grid; gap: 1rem;">
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Eyebrow Text</label>
+              <input type="text" name="eyebrow" value="${about.valuesSectionTitle.eyebrow}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Section Title</label>
+              <input type="text" name="title" value="${about.valuesSectionTitle.title}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+            </div>
+            <button type="submit" style="background: var(--gold); color: #0a0a0a; padding: 0.75rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+              <i class="ri-save-line"></i> Save Headers
+            </button>
+          </form>
+        </div>
+
+        <!-- Values Cards -->
+        <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="ri-star-line" style="color: var(--gold);"></i>
+              Core Values Cards
+            </h3>
+            <button onclick="AdminAppNew.showValueForm()" style="background: var(--gold); color: #0a0a0a; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="ri-add-line"></i> Add Value
+            </button>
+          </div>
+
+          <div style="display: grid; gap: 1rem; margin-bottom: 1.5rem;">
+            ${about.values.map((value, index) => `
+              <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                  <h4 style="margin: 0; font-size: 1.1rem; color: var(--gold);">${value.title}</h4>
+                  <div>
+                    <button onclick="AdminAppNew.editValue(${index})" style="background: none; border: none; color: var(--gold); cursor: pointer; padding: 0.5rem; font-size: 1rem;">
+                      <i class="ri-edit-line"></i>
+                    </button>
+                    <button onclick="AdminAppNew.deleteValue(${index})" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 0.5rem; font-size: 1rem;">
+                      <i class="ri-delete-bin-line"></i>
+                    </button>
+                  </div>
+                </div>
+                <p style="margin: 0; color: var(--muted); line-height: 1.6;">${value.description}</p>
+              </div>
+            `).join('')}
+          </div>
+
+          <div id="value-form-container"></div>
+        </div>
+      </div>
+    `;
+    
+    // Hero form submit handler
+    document.getElementById('hero-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const heroData = Object.fromEntries(formData);
+      
+      about.hero = heroData;
+      
+      try {
+        await this.dataAdapter.updateSection('about', about);
+        this.showAlert('✅ Hero section updated successfully!', 'success');
+      } catch (error) {
+        this.showAlert('❌ Failed to save: ' + error.message, 'error');
+      }
+    });
+    
+    // Story form submit handler
+    document.getElementById('story-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const storyData = Object.fromEntries(formData);
+      
+      about.story = storyData;
+      
+      try {
+        await this.dataAdapter.updateSection('about', about);
+        this.showAlert('✅ Story section updated successfully!', 'success');
+      } catch (error) {
+        this.showAlert('❌ Failed to save: ' + error.message, 'error');
+      }
+    });
+
+    // Values headers form submit handler
+    document.getElementById('values-headers-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const headersData = Object.fromEntries(formData);
+      
+      about.valuesSectionTitle = headersData;
+      
+      try {
+        await this.dataAdapter.updateSection('about', about);
+        this.showAlert('✅ Values section headers updated successfully!', 'success');
+      } catch (error) {
+        this.showAlert('❌ Failed to save: ' + error.message, 'error');
+      }
+    });
+  },
+
+  showValueForm(value = null, index = null) {
+    const isEdit = value !== null;
+    const container = document.getElementById('value-form-container');
+    
+    const formHTML = `
+      <div style="background: rgba(255,255,255,0.08); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); margin-top: 1rem;">
+        <h4 style="margin: 0 0 1rem 0;">${isEdit ? 'Edit' : 'Add New'} Value</h4>
+        <form id="value-form" style="display: grid; gap: 1rem;">
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Title</label>
+            <input type="text" name="title" value="${value?.title || ''}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+          </div>
+
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Description</label>
+            <textarea name="description" rows="3" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem; font-family: inherit; resize: vertical;">${value?.description || ''}</textarea>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <button type="submit" style="flex: 1; background: var(--gold); color: #0a0a0a; padding: 0.75rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+              <i class="ri-save-line"></i> ${isEdit ? 'Update' : 'Add'} Value
+            </button>
+            <button type="button" onclick="AdminAppNew.loadAboutSection()" style="background: rgba(255,255,255,0.1); color: var(--ivory); padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    `;
+    
+    container.innerHTML = formHTML;
+    
+    document.getElementById('value-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const valueData = Object.fromEntries(formData);
+      
+      const about = await this.dataAdapter.getSection('about');
+      
+      if (isEdit) {
+        about.values[index] = valueData;
+      } else {
+        about.values.push(valueData);
+      }
+      
+      try {
+        await this.dataAdapter.updateSection('about', about);
+        this.showAlert(`✅ Value ${isEdit ? 'updated' : 'added'} successfully!`, 'success');
+        await this.loadAboutSection();
+      } catch (error) {
+        this.showAlert('❌ Failed to save: ' + error.message, 'error');
+      }
+    });
+  },
+
+  async editValue(index) {
+    const about = await this.dataAdapter.getSection('about');
+    this.showValueForm(about.values[index], index);
+  },
+
+  async deleteValue(index) {
+    if (!confirm('Are you sure you want to delete this value?')) return;
+    
+    const about = await this.dataAdapter.getSection('about');
+    about.values.splice(index, 1);
+    
+    try {
+      await this.dataAdapter.updateSection('about', about);
+      this.showAlert('✅ Value deleted successfully!', 'success');
+      await this.loadAboutSection();
+    } catch (error) {
+      this.showAlert('❌ Failed to delete: ' + error.message, 'error');
+    }
   },
 
   async loadTimelineSection() {
-    this.showAlert('Timeline section - Coming soon!', 'info');
+    const timeline = await this.dataAdapter.getSection('timeline') || [];
+    const timelineHeaders = await this.dataAdapter.getSection('timelineHeaders') || {
+      eyebrow: 'Milestones',
+      title: 'Our Journey'
+    };
+    const content = document.getElementById('admin-content');
+    
+    content.innerHTML = `
+      <div style="max-width: 1200px; margin: 0 auto;">
+        <!-- Timeline Headers -->
+        <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem;">
+          <h3 style="margin: 0 0 1.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ri-text" style="color: var(--gold);"></i>
+            Timeline Section Headers
+          </h3>
+          <form id="timeline-headers-form" style="display: grid; gap: 1rem;">
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Eyebrow Text</label>
+              <input type="text" name="eyebrow" value="${timelineHeaders.eyebrow}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Section Title</label>
+              <input type="text" name="title" value="${timelineHeaders.title}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+            </div>
+            <button type="submit" style="background: var(--gold); color: #0a0a0a; padding: 0.75rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+              <i class="ri-save-line"></i> Save Headers
+            </button>
+          </form>
+        </div>
+
+        <!-- Timeline Milestones -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+          <div>
+            <h2 style="font-size: 2rem; margin: 0 0 0.5rem 0;">Timeline Milestones</h2>
+            <p style="color: var(--muted); margin: 0;">${timeline.length} milestones</p>
+          </div>
+          <button onclick="AdminAppNew.showTimelineForm()" style="background: var(--gold); color: #0a0a0a; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ri-add-line"></i> Add Milestone
+          </button>
+        </div>
+
+        <div style="display: grid; gap: 1.5rem;">
+          ${timeline.sort((a, b) => parseInt(a.year) - parseInt(b.year)).map((item, index) => `
+            <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                  <div style="font-size: 1.5rem; color: var(--gold); font-weight: 600; margin-bottom: 0.5rem;">${item.year}</div>
+                  <h3 style="margin: 0; font-size: 1.25rem;">${item.title}</h3>
+                </div>
+                <div>
+                  <button onclick="AdminAppNew.editTimeline(${index})" style="background: none; border: none; color: var(--gold); cursor: pointer; padding: 0.5rem; font-size: 1.1rem;">
+                    <i class="ri-edit-line"></i>
+                  </button>
+                  <button onclick="AdminAppNew.deleteTimeline(${index})" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 0.5rem; font-size: 1.1rem;">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </div>
+              </div>
+              <p style="margin: 0; color: var(--muted); line-height: 1.6;">${item.description}</p>
+            </div>
+          `).join('')}
+        </div>
+
+        <div id="timeline-form-container"></div>
+      </div>
+    `;
+
+    // Timeline headers form submit handler
+    document.getElementById('timeline-headers-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const headersData = Object.fromEntries(formData);
+      
+      try {
+        await this.dataAdapter.updateSection('timelineHeaders', headersData);
+        this.showAlert('✅ Timeline headers updated successfully!', 'success');
+      } catch (error) {
+        this.showAlert('❌ Failed to save: ' + error.message, 'error');
+      }
+    });
+  },
+
+  showTimelineForm(item = null, index = null) {
+    const isEdit = item !== null;
+    const container = document.getElementById('timeline-form-container') || document.getElementById('admin-content');
+    
+    const formHTML = `
+      <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-top: 2rem;">
+        <h3 style="margin: 0 0 1.5rem 0;">${isEdit ? 'Edit' : 'Add New'} Milestone</h3>
+        <form id="timeline-form" style="display: grid; gap: 1.5rem;">
+          <div style="display: grid; grid-template-columns: 150px 1fr; gap: 1rem;">
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Year</label>
+              <input type="text" name="year" value="${item?.year || new Date().getFullYear()}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Title</label>
+              <input type="text" name="title" value="${item?.title || ''}" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem;">
+            </div>
+          </div>
+
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gold);">Description</label>
+            <textarea name="description" rows="3" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--ivory); font-size: 1rem; font-family: inherit; resize: vertical;">${item?.description || ''}</textarea>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <button type="submit" style="flex: 1; background: var(--gold); color: #0a0a0a; padding: 1rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+              <i class="ri-save-line"></i> ${isEdit ? 'Update' : 'Add'} Milestone
+            </button>
+            <button type="button" onclick="AdminAppNew.loadTimelineSection()" style="background: rgba(255,255,255,0.1); color: var(--ivory); padding: 1rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    `;
+    
+    if (container.id === 'timeline-form-container') {
+      container.innerHTML = formHTML;
+    } else {
+      container.innerHTML += formHTML;
+    }
+    
+    document.getElementById('timeline-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const timelineData = Object.fromEntries(formData);
+      
+      const timeline = await this.dataAdapter.getSection('timeline') || [];
+      
+      if (isEdit) {
+        timeline[index] = { ...item, ...timelineData };
+      } else {
+        timelineData.id = Date.now();
+        timeline.push(timelineData);
+      }
+      
+      try {
+        await this.dataAdapter.updateSection('timeline', timeline);
+        this.showAlert(`✅ Milestone ${isEdit ? 'updated' : 'added'} successfully!`, 'success');
+        await this.loadTimelineSection();
+      } catch (error) {
+        this.showAlert('❌ Failed to save: ' + error.message, 'error');
+      }
+    });
+  },
+
+  async editTimeline(index) {
+    const timeline = await this.dataAdapter.getSection('timeline') || [];
+    this.showTimelineForm(timeline[index], index);
+  },
+
+  async deleteTimeline(index) {
+    if (!confirm('Are you sure you want to delete this milestone?')) return;
+    
+    const timeline = await this.dataAdapter.getSection('timeline') || [];
+    timeline.splice(index, 1);
+    
+    try {
+      await this.dataAdapter.updateSection('timeline', timeline);
+      this.showAlert('✅ Milestone deleted successfully!', 'success');
+      await this.loadTimelineSection();
+    } catch (error) {
+      this.showAlert('❌ Failed to delete: ' + error.message, 'error');
+    }
+  },
+
+  async loadStatsSection() {
+    this.showAlert('Stats section - Coming soon!', 'info');
   },
 
   async loadContactSection() {
